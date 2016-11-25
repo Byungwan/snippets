@@ -280,6 +280,7 @@ int read_full_box(xmlNodePtr xml_node, full_box_t *box)
         return -1;
     }
 
+    /* XXX endian? */
     box->flgs = xmlGetPropHexULong(xml_node, XML_ATTR_BOX_FLGS);
     if (box->flgs == LONG_MAX) {
         fprintf(stderr, "box %s error: %d\n", XML_ATTR_BOX_FLGS, box->flgs);
@@ -287,6 +288,13 @@ int read_full_box(xmlNodePtr xml_node, full_box_t *box)
     }
 
     return 0;
+}
+
+void free_sidx_box(sidx_box_t *)
+{
+    if (sidx->refs)
+        free(sidx->refs);
+    free(sidx);
 }
 
 sidx_box_t *read_sidx_box(xmlNodePtr xml_node)
@@ -418,7 +426,7 @@ sidx_box_t *read_sidx_box(xmlNodePtr xml_node)
     return sidx;
 
 error:
-    free(sidx);
+    free_sidx_box(sidx);
     return NULL;
 }
 
@@ -428,13 +436,13 @@ int write_base_box(base_box_t *box, FILE *fp)
 
     rc = write_u32(box->sz, fp);
     if (rc != 0) {
-        fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_SZ);
+        fprintf(stderr, "box size write error\n");
         return rc;
     }
 
     rc = fwrite(&box->type, sizeof(box->type), 1, fp);
     if (rc != 1) {
-        fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_TYPE);
+        fprintf(stderr, "box type write error\n");
         return -1;
     }
 
@@ -463,19 +471,19 @@ int write_full_box(full_box_t *box, FILE *fp)
 
     rc = write_u8(box->ver, fp);
     if (rc != 0) {
-        fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_VER);
+        fprintf(stderr, "box version write error\n");
         return rc;
     }
 
+    /* XXX endian? */
     rc = write_u24(box->flgs, fp);
     if (rc != 0) {
-        fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_FLGS);
+        fprintf(stderr, "box flags write error\n");
         return rc;
     }
 
     return 0;
 }
-
 
 int write_sidx_box(sidx_box_t *box, FILE *fp)
 {
@@ -489,38 +497,36 @@ int write_sidx_box(sidx_box_t *box, FILE *fp)
 
     rc = write_u32(box->ref_id, fp);
     if (rc != 0) {
-        fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_REF_ID);
+        fprintf(stderr, "sidx reference_ID write error\n");
         return rc;
     }
 
     rc = write_u32(box->tm_scal, fp);
     if (rc != 0) {
-        fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_TM_SCAL);
+        fprintf(stderr, "sidx timescale write error\n");
         return rc;
     }
 
     if (box->full_box.ver == 0) {
         rc = write_u32(box->erly_pres_tm, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx %s write error\n",
-                    XML_ATTR_SIDX_ERLY_PRES_TM);
+            fprintf(stderr, "sidx earliest_presentation_time write error\n");
             return rc;
         }
         rc = write_u32(box->frst_offs, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_FRST_OFFS);
+            fprintf(stderr, "sidx first_offset write error\n");
             return rc;
         }
     } else {
         rc = write_u64(box->erly_pres_tm, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx %s write error\n",
-                    XML_ATTR_SIDX_ERLY_PRES_TM);
+            fprintf(stderr, "sidx earliest_presentation_time write error\n");
             return rc;
         }
         rc = write_u64(box->frst_offs, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_FRST_OFFS);
+            fprintf(stderr, "sidx first_offset write error\n");
             return rc;
         }
     }
@@ -542,28 +548,20 @@ int write_sidx_box(sidx_box_t *box, FILE *fp)
         u32 = (ref->ref_type << 31) + ref->ref_sz;
         rc = write_u32(u32, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx ref(%d) %s %s write error\n",
-                    i + 1,
-                    XML_ATTR_SIDX_REF_TYPE, XML_ATTR_SIDX_REF_SZ);
+            fprintf(stderr, "sidx ref(%d) type, size write error\n", i + 1);
             return rc;
         }
 
         rc = write_u32(ref->sseg_dur, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx ref(%d) %s write error\n",
-                    i + 1, XML_ATTR_SIDX_SSEG_DUR);
+            fprintf(stderr, "sidx ref(%d) duration write error\n", i + 1);
             return rc;
         }
 
-        /* XXX */
-        u32 = ((ref->strt_sap << 31) + (ref->sap_type << 28)
-               + ref->sap_delta_tm);
+        u32 = ((ref->strt_sap << 31) + (ref->sap_type << 28) + ref->sap_delta_tm);
         rc = write_u32(u32, fp);
         if (rc != 0) {
-            fprintf(stderr, "sidx ref(%d) %s %s %s write error\n",
-                    i + 1,
-                    XML_ATTR_SIDX_STRT_SAP, XML_ATTR_SIDX_SAP_TYPE,
-                    XML_ATTR_SIDX_SAP_DELTA_TM);
+            fprintf(stderr, "sidx ref(%d) SAP info. write error\n", i + 1);
             return rc;
         }
     }
@@ -587,7 +585,7 @@ int write_boxes(xmlNodePtr node, FILE *fp)
                 }
 
                 rc = write_sidx_box(sidx, fp);
-                free(sidx);
+                free_sidx_box(sidx);
                 if (rc != 0) {
                     fprintf(stderr, "sidx write error\n");
                     return rc;
@@ -644,19 +642,18 @@ int main(int argc, const char *argv[])
         goto error;
     }
 
+    fclose(fp);
     xmlFreeDoc(doc);
     xmlCleanupParser();
-    fclose(fp);
 
     return EXIT_SUCCESS;
 
 error:
+    if (fp)
+        fclose(fp);
     if (doc)
         xmlFreeDoc(doc);
     xmlCleanupParser();
-
-    if (fp)
-        fclose(fp);
 
     exit(EXIT_FAILURE);
 }
