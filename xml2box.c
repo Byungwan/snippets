@@ -35,6 +35,8 @@
 #define XML_ATTR_SIDX_TM_SCAL       MAKE_XMLCHAR("timescale")
 #define XML_ATTR_SIDX_ERLY_PRES_TM  MAKE_XMLCHAR("earliest_presentation_time")
 #define XML_ATTR_SIDX_FRST_OFFS     MAKE_XMLCHAR("first_offset")
+
+#define XML_NODE_SIDX_REF           MAKE_XMLCHAR("Reference")
 #define XML_ATTR_SIDX_REF_TYPE      MAKE_XMLCHAR("type")
 #define XML_ATTR_SIDX_REF_SZ        MAKE_XMLCHAR("size")
 #define XML_ATTR_SIDX_SSEG_DUR      MAKE_XMLCHAR("duration")
@@ -42,9 +44,8 @@
 #define XML_ATTR_SIDX_SAP_TYPE      MAKE_XMLCHAR("SAP_type")
 #define XML_ATTR_SIDX_SAP_DELTA_TM  MAKE_XMLCHAR("SAPDeltaTime")
 
-#define XML_NODE_SIDX_REF MAKE_XMLCHAR("Reference")
-
-#define BOX_SIDX FOURCC('s', 'i', 'd', 'x')
+#define BOX_TYPE_SIDX FOURCC('s', 'i', 'd', 'x')
+#define BOX_TYPE_UUID FOURCC('u', 'u', 'i', 'd')
 
 typedef uint8_t bool_t;
 typedef uint32_t uint24_t;
@@ -84,46 +85,6 @@ typedef struct sidx_box_s {
 
     sidx_ref_t *refs;
 } sidx_box_t;
-
-int xml2box_write_u8(uint8_t n, FILE *fp)
-{
-    if (fwrite(&n, sizeof(n), 1, fp) != 1)
-        return -1;
-    return 0;
-}
-
-int xml2box_write_u16(uint16_t n, FILE *fp)
-{
-    uint16_t b16 = htobe16(n);
-    if (fwrite(&b16, sizeof(b16), 1, fp) != 1)
-        return -1;
-    return 0;
-}
-
-int xml2box_write_u24(uint32_t n, FILE *fp)
-{
-    uint32_t b32 = htobe32(n);
-    b32 <<= 8;
-    if (fwrite(&b32, sizeof(b32) - 1, 1, fp) != 1)
-        return -1;
-    return 0;
-}
-
-int xml2box_write_u32(uint32_t n, FILE *fp)
-{
-    uint32_t b32 = htobe32(n);
-    if (fwrite(&b32, sizeof(b32), 1, fp) != 1)
-        return -1;
-    return 0;
-}
-
-int xml2box_write_u64(uint64_t n, FILE *fp)
-{
-    uint64_t b64 = htobe64(n);
-    if (fwrite(&b64, sizeof(b64), 1, fp) != 1)
-        return -1;
-    return 0;
-}
 
 long xmlGetPropLong(xmlNodePtr node, const xmlChar *name)
 {
@@ -246,6 +207,71 @@ long long xmlGetPropULongLong(xmlNodePtr node, const xmlChar *name)
     return val;
 }
 
+int xml2box_write_u8(uint8_t n, FILE *fp)
+{
+    if (fwrite(&n, sizeof(n), 1, fp) != 1)
+        return -1;
+    return 0;
+}
+
+int xml2box_write_u16(uint16_t n, FILE *fp)
+{
+    uint16_t b16 = htobe16(n);
+    if (fwrite(&b16, sizeof(b16), 1, fp) != 1)
+        return -1;
+    return 0;
+}
+
+int xml2box_write_u24(uint32_t n, FILE *fp)
+{
+    uint32_t b32 = htobe32(n);
+    b32 <<= 8;
+    if (fwrite(&b32, sizeof(b32) - 1, 1, fp) != 1)
+        return -1;
+    return 0;
+}
+
+int xml2box_write_u32(uint32_t n, FILE *fp)
+{
+    uint32_t b32 = htobe32(n);
+    if (fwrite(&b32, sizeof(b32), 1, fp) != 1)
+        return -1;
+    return 0;
+}
+
+int xml2box_write_u64(uint64_t n, FILE *fp)
+{
+    uint64_t b64 = htobe64(n);
+    if (fwrite(&b64, sizeof(b64), 1, fp) != 1)
+        return -1;
+    return 0;
+}
+
+uint64_t xml2box_get_base_box_size(base_box_t *box)
+{
+    uint64_t sz = 8;
+    if (box->type == BOX_TYPE_UUID)
+        sz += 16;
+    return sz;
+}
+
+uint64_t xml2box_get_full_box_size(full_box_t *box)
+{
+    return xml2box_get_base_box_size(&box->base_box) + 4;
+}
+
+void xml2box_set_box_size(base_box_t *box, uint64_t sz)
+{
+
+    if (sz > UINT32_MAX) {
+        box->sz = 1;
+        box->sz64 = sz + 8;
+    } else {
+        box->sz = sz;
+        box->sz64 = 0;
+    }
+}
+
 int xml2box_read_full_box(xmlNodePtr xml_node, full_box_t *box)
 {
     box->ver = xmlGetPropULong(xml_node, XML_ATTR_BOX_VER);
@@ -268,6 +294,7 @@ sidx_box_t *xml2box_read_sidx_box(xmlNodePtr xml_node)
     xmlNodePtr curr_node = NULL;
     sidx_box_t *sidx = NULL;
     sidx_ref_t *ref = NULL;
+    uint64_t sz;
 
     sidx = calloc(1, sizeof(sidx_box_t));
     if (sidx == NULL) {
@@ -380,12 +407,13 @@ sidx_box_t *xml2box_read_sidx_box(xmlNodePtr xml_node)
         }
     }
 
-    /* XXX */
-    sidx->full_box.base_box.sz = 8 + 4 + 8 + 8 + 4 + (12 * sidx->ref_cnt);
+    sidx->full_box.base_box.type = BOX_TYPE_SIDX;
+    sz = xml2box_get_full_box_size(&sidx->full_box);
+    sz += 8 + 8 + 4 + (12 * sidx->ref_cnt);
     if (sidx->full_box.ver != 0) {
-        sidx->full_box.base_box.sz += 8;
+        sz += 8;
     }
-    sidx->full_box.base_box.type = BOX_SIDX;
+    xml2box_set_box_size(&sidx->full_box.base_box, sz);
 
     return sidx;
 
@@ -394,7 +422,6 @@ error:
     return NULL;
 }
 
-/* XXX */
 int xml2box_write_base_box(base_box_t *box, FILE *fp)
 {
     int rc;
@@ -408,6 +435,17 @@ int xml2box_write_base_box(base_box_t *box, FILE *fp)
     rc = fwrite(&box->type, sizeof(box->type), 1, fp);
     if (rc != 1) {
         fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_TYPE);
+        return -1;
+    }
+
+    if (box->sz == 1) {
+        rc = xml2box_write_u64(box->sz64, fp);
+        if (rc != 0) {
+            fprintf(stderr, "box largesize write error\n");
+            return rc;
+        }
+    } else if (box->sz == 0) {
+        /* TODO: not supported yet */
         return -1;
     }
 
