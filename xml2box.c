@@ -207,14 +207,14 @@ long long xmlGetPropULongLong(xmlNodePtr node, const xmlChar *name)
     return val;
 }
 
-int xml2box_write_u8(uint8_t n, FILE *fp)
+int write_u8(uint8_t n, FILE *fp)
 {
     if (fwrite(&n, sizeof(n), 1, fp) != 1)
         return -1;
     return 0;
 }
 
-int xml2box_write_u16(uint16_t n, FILE *fp)
+int write_u16(uint16_t n, FILE *fp)
 {
     uint16_t b16 = htobe16(n);
     if (fwrite(&b16, sizeof(b16), 1, fp) != 1)
@@ -222,7 +222,7 @@ int xml2box_write_u16(uint16_t n, FILE *fp)
     return 0;
 }
 
-int xml2box_write_u24(uint32_t n, FILE *fp)
+int write_u24(uint32_t n, FILE *fp)
 {
     uint32_t b32 = htobe32(n);
     b32 <<= 8;
@@ -231,7 +231,7 @@ int xml2box_write_u24(uint32_t n, FILE *fp)
     return 0;
 }
 
-int xml2box_write_u32(uint32_t n, FILE *fp)
+int write_u32(uint32_t n, FILE *fp)
 {
     uint32_t b32 = htobe32(n);
     if (fwrite(&b32, sizeof(b32), 1, fp) != 1)
@@ -239,7 +239,7 @@ int xml2box_write_u32(uint32_t n, FILE *fp)
     return 0;
 }
 
-int xml2box_write_u64(uint64_t n, FILE *fp)
+int write_u64(uint64_t n, FILE *fp)
 {
     uint64_t b64 = htobe64(n);
     if (fwrite(&b64, sizeof(b64), 1, fp) != 1)
@@ -247,7 +247,7 @@ int xml2box_write_u64(uint64_t n, FILE *fp)
     return 0;
 }
 
-uint64_t xml2box_get_base_box_size(base_box_t *box)
+uint64_t get_base_box_size(base_box_t *box)
 {
     uint64_t sz = 8;
     if (box->type == BOX_TYPE_UUID)
@@ -255,12 +255,12 @@ uint64_t xml2box_get_base_box_size(base_box_t *box)
     return sz;
 }
 
-uint64_t xml2box_get_full_box_size(full_box_t *box)
+uint64_t get_full_box_size(full_box_t *box)
 {
-    return xml2box_get_base_box_size(&box->base_box) + 4;
+    return get_base_box_size(&box->base_box) + 4;
 }
 
-void xml2box_set_box_size(base_box_t *box, uint64_t sz)
+void set_box_size(base_box_t *box, uint64_t sz)
 {
 
     if (sz > UINT32_MAX) {
@@ -272,7 +272,7 @@ void xml2box_set_box_size(base_box_t *box, uint64_t sz)
     }
 }
 
-int xml2box_read_full_box(xmlNodePtr xml_node, full_box_t *box)
+int read_full_box(xmlNodePtr xml_node, full_box_t *box)
 {
     box->ver = xmlGetPropULong(xml_node, XML_ATTR_BOX_VER);
     if (box->ver > 1) {
@@ -289,7 +289,7 @@ int xml2box_read_full_box(xmlNodePtr xml_node, full_box_t *box)
     return 0;
 }
 
-sidx_box_t *xml2box_read_sidx_box(xmlNodePtr xml_node)
+sidx_box_t *read_sidx_box(xmlNodePtr xml_node)
 {
     xmlNodePtr curr_node = NULL;
     sidx_box_t *sidx = NULL;
@@ -356,7 +356,7 @@ sidx_box_t *xml2box_read_sidx_box(xmlNodePtr xml_node)
          curr_node = curr_node->next) {
         if (curr_node->type == XML_ELEMENT_NODE) {
             if (xmlStrcmp(curr_node->name, XML_NODE_FBOX) == 0) {
-                if (xml2box_read_full_box(curr_node, &sidx->full_box) != 0) {
+                if (read_full_box(curr_node, &sidx->full_box) != 0) {
                     fprintf(stderr, "sidx full_box error\n");
                     goto error;
                 }
@@ -408,12 +408,12 @@ sidx_box_t *xml2box_read_sidx_box(xmlNodePtr xml_node)
     }
 
     sidx->full_box.base_box.type = BOX_TYPE_SIDX;
-    sz = xml2box_get_full_box_size(&sidx->full_box);
+    sz = get_full_box_size(&sidx->full_box);
     sz += 8 + 8 + 4 + (12 * sidx->ref_cnt);
     if (sidx->full_box.ver != 0) {
         sz += 8;
     }
-    xml2box_set_box_size(&sidx->full_box.base_box, sz);
+    set_box_size(&sidx->full_box.base_box, sz);
 
     return sidx;
 
@@ -422,11 +422,11 @@ error:
     return NULL;
 }
 
-int xml2box_write_base_box(base_box_t *box, FILE *fp)
+int write_base_box(base_box_t *box, FILE *fp)
 {
     int rc;
 
-    rc = xml2box_write_u32(box->sz, fp);
+    rc = write_u32(box->sz, fp);
     if (rc != 0) {
         fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_SZ);
         return rc;
@@ -439,7 +439,7 @@ int xml2box_write_base_box(base_box_t *box, FILE *fp)
     }
 
     if (box->sz == 1) {
-        rc = xml2box_write_u64(box->sz64, fp);
+        rc = write_u64(box->sz64, fp);
         if (rc != 0) {
             fprintf(stderr, "box largesize write error\n");
             return rc;
@@ -452,22 +452,22 @@ int xml2box_write_base_box(base_box_t *box, FILE *fp)
     return 0;
 }
 
-int xml2box_write_full_box(full_box_t *box, FILE *fp)
+int write_full_box(full_box_t *box, FILE *fp)
 {
     int rc;
 
-    rc = xml2box_write_base_box(&box->base_box, fp);
+    rc = write_base_box(&box->base_box, fp);
     if (rc != 0) {
         return rc;
     }
 
-    rc = xml2box_write_u8(box->ver, fp);
+    rc = write_u8(box->ver, fp);
     if (rc != 0) {
         fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_VER);
         return rc;
     }
 
-    rc = xml2box_write_u24(box->flgs, fp);
+    rc = write_u24(box->flgs, fp);
     if (rc != 0) {
         fprintf(stderr, "box %s write error\n", XML_ATTR_BOX_FLGS);
         return rc;
@@ -477,59 +477,59 @@ int xml2box_write_full_box(full_box_t *box, FILE *fp)
 }
 
 
-int xml2box_write_sidx_box(sidx_box_t *box, FILE *fp)
+int write_sidx_box(sidx_box_t *box, FILE *fp)
 {
     int rc;
     int i;
 
-    rc = xml2box_write_full_box(&box->full_box, fp);
+    rc = write_full_box(&box->full_box, fp);
     if (rc != 0) {
         return rc;
     }
 
-    rc = xml2box_write_u32(box->ref_id, fp);
+    rc = write_u32(box->ref_id, fp);
     if (rc != 0) {
         fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_REF_ID);
         return rc;
     }
 
-    rc = xml2box_write_u32(box->tm_scal, fp);
+    rc = write_u32(box->tm_scal, fp);
     if (rc != 0) {
         fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_TM_SCAL);
         return rc;
     }
 
     if (box->full_box.ver == 0) {
-        rc = xml2box_write_u32(box->erly_pres_tm, fp);
+        rc = write_u32(box->erly_pres_tm, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx %s write error\n",
                     XML_ATTR_SIDX_ERLY_PRES_TM);
             return rc;
         }
-        rc = xml2box_write_u32(box->frst_offs, fp);
+        rc = write_u32(box->frst_offs, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_FRST_OFFS);
             return rc;
         }
     } else {
-        rc = xml2box_write_u64(box->erly_pres_tm, fp);
+        rc = write_u64(box->erly_pres_tm, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx %s write error\n",
                     XML_ATTR_SIDX_ERLY_PRES_TM);
             return rc;
         }
-        rc = xml2box_write_u64(box->frst_offs, fp);
+        rc = write_u64(box->frst_offs, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx %s write error\n", XML_ATTR_SIDX_FRST_OFFS);
             return rc;
         }
     }
-    rc = xml2box_write_u16(box->rsv, fp);
+    rc = write_u16(box->rsv, fp);
     if (rc != 0) {
         fprintf(stderr, "sidx reserved write error\n");
         return rc;
     }
-    rc = xml2box_write_u16(box->ref_cnt, fp);
+    rc = write_u16(box->ref_cnt, fp);
     if (rc != 0) {
         fprintf(stderr, "sidx reference_count write error\n");
         return rc;
@@ -540,7 +540,7 @@ int xml2box_write_sidx_box(sidx_box_t *box, FILE *fp)
         uint32_t u32;
 
         u32 = (ref->ref_type << 31) + ref->ref_sz;
-        rc = xml2box_write_u32(u32, fp);
+        rc = write_u32(u32, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx ref(%d) %s %s write error\n",
                     i + 1,
@@ -548,7 +548,7 @@ int xml2box_write_sidx_box(sidx_box_t *box, FILE *fp)
             return rc;
         }
 
-        rc = xml2box_write_u32(ref->sseg_dur, fp);
+        rc = write_u32(ref->sseg_dur, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx ref(%d) %s write error\n",
                     i + 1, XML_ATTR_SIDX_SSEG_DUR);
@@ -558,7 +558,7 @@ int xml2box_write_sidx_box(sidx_box_t *box, FILE *fp)
         /* XXX */
         u32 = ((ref->strt_sap << 31) + (ref->sap_type << 28)
                + ref->sap_delta_tm);
-        rc = xml2box_write_u32(u32, fp);
+        rc = write_u32(u32, fp);
         if (rc != 0) {
             fprintf(stderr, "sidx ref(%d) %s %s %s write error\n",
                     i + 1,
@@ -571,7 +571,7 @@ int xml2box_write_sidx_box(sidx_box_t *box, FILE *fp)
     return 0;
 }
 
-int xml2box_write(xmlNodePtr node, FILE *fp)
+int write_boxes(xmlNodePtr node, FILE *fp)
 {
     xmlNodePtr curr_node = NULL;
     int rc;
@@ -580,13 +580,13 @@ int xml2box_write(xmlNodePtr node, FILE *fp)
             if (xmlStrcmp(curr_node->name, XML_NODE_SIDX) == 0) {
                 sidx_box_t *sidx;
 
-                sidx = xml2box_read_sidx_box(curr_node);
+                sidx = read_sidx_box(curr_node);
                 if (sidx == NULL) {
                     fprintf(stderr, "sidx read error\n");
                     return -1;
                 }
 
-                rc = xml2box_write_sidx_box(sidx, fp);
+                rc = write_sidx_box(sidx, fp);
                 free(sidx);
                 if (rc != 0) {
                     fprintf(stderr, "sidx write error\n");
@@ -594,7 +594,7 @@ int xml2box_write(xmlNodePtr node, FILE *fp)
                 }
             }
         }
-        xml2box_write(curr_node->children, fp);
+        write_boxes(curr_node->children, fp);
     }
 
     return 0;
@@ -639,7 +639,7 @@ int main(int argc, const char *argv[])
         goto error;
     }
 
-    if (xml2box_write(root->children, fp) != 0) {
+    if (write_boxes(root->children, fp) != 0) {
         fprintf(stderr, "box write error: %s\n", boxfile);
         goto error;
     }
