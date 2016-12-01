@@ -417,7 +417,6 @@ write_seg(off_t offs, sidx_box_t *sidx, int idx, long dur,
     if (idx > sidx->ref_cnt)
         return -1;
 
-    sidx->ref_cnt = idx + 1;
     ref->ref_type = 0;
     ref->ref_sz = len;
     ref->sseg_dur = dur;
@@ -440,7 +439,8 @@ write_seg(off_t offs, sidx_box_t *sidx, int idx, long dur,
         return -1;
 
     /* update sidx */
-    sidx->ref_cnt = idx;
+    sidx->ref_cnt = idx + 1;
+    sidx->sz = SIDX_SIZE_MIN + (SIDX_REF_SIZE * sidx->ref_cnt);
     sidx->frst_offs = SIDX_REF_SIZE * (sidx->max_ref_cnt - sidx->ref_cnt);
     sidx_end = write_sidx_seg(offs, sidx, fp);
     if (sidx_end == -1)
@@ -696,7 +696,7 @@ MediaFile_write_iseg(inimedia_MediaFileObject *self, PyObject *args)
     sidx.frst_offs = SIDX_REF_SIZE * max_seg_cnt;
     sidx.ref_cnt = 0;
     sidx.max_ref_cnt = max_seg_cnt;
-    sidx.refs = malloc(sidx.frst_offs);
+    sidx.refs = malloc(sizeof(*sidx.refs) * sidx.max_ref_cnt);
     if (sidx.refs == NULL) {
         PyErr_SetString(PyExc_SystemError, "sidx references alloc error");
         return NULL;
