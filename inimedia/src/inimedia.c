@@ -14,6 +14,7 @@
 #define BOX_TYPE_FTYP FOURCC('f', 't', 'y', 'p')
 #define BOX_TYPE_MOOV FOURCC('m', 'o', 'o', 'v')
 #define BOX_TYPE_SIDX FOURCC('s', 'i', 'd', 'x')
+#define BOX_TYPE_MOOF FOURCC('m', 'o', 'o', 'f')
 #define BOX_TYPE_UUID FOURCC('u', 'u', 'i', 'd')
 #define BOX_TYPE_FREE FOURCC('f', 'r', 'e', 'e')
 
@@ -43,18 +44,8 @@ typedef struct full_box_s {
 
 /* XXX only support version 1 */
 #define SIDX_SIZE_MIN 40
-
-typedef struct sidx_box_s {
-    BMFF_FULL_BOX
-    uint32_t ref_id;
-    uint32_t tm_scal;
-    uint64_t erly_pres_tm;
-    uint64_t frst_offs;
-    uint16_t rsv;
-    uint16_t ref_cnt;
-} sidx_box_t;
-
 #define SIDX_REF_SIZE 12
+#define MAX_SIDX_REF  1000000
 
 typedef struct sidx_ref_s {
     bool_t   ref_type;
@@ -64,6 +55,18 @@ typedef struct sidx_ref_s {
     uint3_t  sap_type;
     uint28_t sap_delta_tm;
 } sidx_ref_t;
+
+typedef struct sidx_box_s {
+    BMFF_FULL_BOX
+    uint32_t ref_id;
+    uint32_t tm_scal;
+    uint64_t erly_pres_tm;
+    uint64_t frst_offs;
+    uint16_t rsv;
+    uint16_t ref_cnt;
+    uint16_t max_ref_cnt;
+    sidx_ref_t *refs;
+} sidx_box_t;
 
 static int
 read_u8(uint8_t *np, FILE *fp)
@@ -104,7 +107,7 @@ static int
 read_u24(uint32_t *np, FILE *fp)
 {
     uint32_t b32;
-    if (fread(&b32, sizeof(b32) - 1, 1, fp) != 1)
+    if (fread(&b32, sizeof(b32)-1, 1, fp) != 1)
         return -1;
     *np = be32toh((b32 >> 8) & 0x00FFFFFF);
     return 0;
@@ -115,7 +118,7 @@ write_u24(uint32_t n, FILE *fp)
 {
     uint32_t b32 = htobe32(n);
     b32 <<= 8;
-    if (fwrite(&b32, sizeof(b32) - 1, 1, fp) != 1)
+    if (fwrite(&b32, sizeof(b32)-1, 1, fp) != 1)
         return -1;
     return 0;
 }
@@ -159,18 +162,37 @@ write_u64(uint64_t n, FILE *fp)
 }
 
 static int
-write_zero(int32_t len, FILE *fp)
+read_dummy(int32_t len, FILE *fp)
 {
-    uint64_t i64 = 0;
-    uint8_t i8 = 0;
+    uint64_t u64 = 0;
+    uint8_t u8 = 0;
     int32_t i;
 
     for (i = 0; i < len / 8; i++) {
-        if (fwrite(&i64, sizeof(i64), 1, fp) != 1)
+        if (fread(&u64, sizeof(u64), 1, fp) != 1)
             return -1;
     }
     for (i = 0; i < len % 8; i++) {
-        if (fwrite(&i8, sizeof(i8), 1, fp) != 1)
+        if (fread(&u8, sizeof(u8), 1, fp) != 1)
+            return -1;
+    }
+
+    return 0;
+}
+
+static int
+write_zero(int32_t len, FILE *fp)
+{
+    uint64_t u64 = 0;
+    uint8_t u8 = 0;
+    int32_t i;
+
+    for (i = 0; i < len / 8; i++) {
+        if (fwrite(&u64, sizeof(u64), 1, fp) != 1)
+            return -1;
+    }
+    for (i = 0; i < len % 8; i++) {
+        if (fwrite(&u8, sizeof(u8), 1, fp) != 1)
             return -1;
     }
 
@@ -197,7 +219,7 @@ read_base_box(base_box_t *box, FILE *fp)
     }
 
     if (box->type == BOX_TYPE_UUID) {
-        if (fseek(fp, 16, SEEK_CUR) != 0) /* usertype */
+        if (read_dummy(16, fp) != 0)
             return -1;
     }
 
@@ -263,71 +285,102 @@ write_init_seg(const uint8_t *buf, int len, FILE *fp)
 }
 
 static off_t
-read_sidx_seg(off_t offs, sidx_box_t *box, FILE *fp)
+read_sidx_seg(off_t offs, sidx_box_t *sidx, FILE *fp)
 {
+    uint32_t u32;
     uint16_t dmm16;
+    sidx_ref_t *ref;
+    int i;
 
     if (fseeko(fp, offs, SEEK_SET) != 0)
         return -1;
 
-    if (read_full_box((full_box_t *)box, fp) != 0)
+    if (read_full_box((full_box_t *)sidx, fp) != 0)
         return -1;
 
-    if (box->type != BOX_TYPE_SIDX)
+    if (sidx->type != BOX_TYPE_SIDX)
         return -1;
-    if (box->ver != 1)           /* XXX only support version 1 */
+    if (sidx->ver != 1)           /* XXX only support version 1 */
         return -1;
 
-    if (read_u32(&box->ref_id, fp) != 0) /* reference_ID */
+    if (read_u32(&sidx->ref_id, fp) != 0) /* reference_ID */
         return -1;
-    if (read_u32(&box->tm_scal, fp) != 0) /* timescale */
+    if (read_u32(&sidx->tm_scal, fp) != 0) /* timescale */
         return -1;
-    if (read_u64(&box->erly_pres_tm, fp) != 0) /* earliest_presentation_time */
+
+    if (read_u64(&sidx->erly_pres_tm, fp) != 0) /* earliest_presentation_time */
         return -1;
-    if (read_u64(&box->frst_offs, fp)) /* first_offset */
+    if (read_u64(&sidx->frst_offs, fp)) /* first_offset */
         return -1;
     if (read_u16(&dmm16, fp) != 0) /* reserved */
         return -1;
-    if (read_u16(&box->ref_cnt, fp) != 0) /* reference_count */
+    if (read_u16(&sidx->ref_cnt, fp) != 0) /* reference_count */
         return -1;
 
-    if (box->sz != SIDX_SIZE_MIN + (SIDX_REF_SIZE * box->ref_cnt))
+    if (sidx->sz != SIDX_SIZE_MIN + (SIDX_REF_SIZE * sidx->ref_cnt))
         return -1;
 
-    return offs + box->sz;
+    sidx->max_ref_cnt = sidx->ref_cnt + sidx->frst_offs / SIDX_REF_SIZE;
+    if (sidx->max_ref_cnt > MAX_SIDX_REF)
+        return -1;
+    sidx->refs = malloc(sizeof(*sidx->refs) * sidx->max_ref_cnt);
+    if (sidx->refs == NULL)
+        return -1;
+
+    ref = sidx->refs;
+    for (i = 0; i < sidx->ref_cnt; i++) {
+        if (read_u32(&u32, fp) != 0)
+            goto error;
+        ref->ref_type = (u32 >> 31) & 0x00000001; /* reference _type */
+        ref->ref_sz = u32 & 0x7FFFFFFF;        /* reference _size */
+        if (read_u32(&ref->sseg_dur, fp) != 0) /* subsegment_duration */
+            goto error;
+        if (read_u32(&u32, fp) != 0) /* XXX skip all about SAP */
+            goto error;
+        ref->strt_sap = 1;
+        ref->sap_type = 0;
+        ref->sap_delta_tm = 0;
+        ref++;
+    }
+
+    return offs + sidx->sz;
+
+error:
+    free(sidx->refs);
+    return -1;
 }
 
 static off_t
-write_sidx_seg(off_t offs, sidx_box_t *box, FILE *fp)
+write_sidx_seg(off_t offs, sidx_box_t *sidx, FILE *fp)
 {
     if (fseeko(fp, offs, SEEK_SET) != 0)
         return -1;
 
-    if (box->sz != SIDX_SIZE_MIN + (SIDX_REF_SIZE * box->ref_cnt))
+    if (sidx->sz != SIDX_SIZE_MIN + (SIDX_REF_SIZE * sidx->ref_cnt))
         return -1;
 
-    if (write_u32(box->sz, fp) != 0) /* size */
+    if (write_u32(sidx->sz, fp) != 0) /* size */
         return -1;
-    if (fwrite(&box->type, sizeof(box->type), 1, fp) != 1) /* type */
+    if (fwrite(&sidx->type, sizeof(sidx->type), 1, fp) != 1) /* type */
         return -1;
-    if (write_u8(box->ver, fp) != 0)   /* version */
+    if (write_u8(sidx->ver, fp) != 0)   /* version */
         return -1;
-    if (write_u24(box->flgs, fp) != 0)  /* flags */
+    if (write_u24(sidx->flgs, fp) != 0)  /* flags */
         return -1;
-    if (write_u32(box->ref_id, fp) != 0)  /* reference_ID */
+    if (write_u32(sidx->ref_id, fp) != 0)  /* reference_ID */
         return -1;
-    if (write_u32(box->tm_scal, fp) != 0)  /* timescale */
+    if (write_u32(sidx->tm_scal, fp) != 0)  /* timescale */
         return -1;
-    if (write_u64(box->erly_pres_tm, fp) != 0) /* earliest_presentation_time */
+    if (write_u64(sidx->erly_pres_tm, fp) != 0) /* earliest_presentation_time */
         return -1;
-    if (write_u64(box->frst_offs, fp)) /* first_offset */
+    if (write_u64(sidx->frst_offs, fp)) /* first_offset */
         return -1;
     if (write_u16(0, fp) != 0)  /* reserved */
         return -1;
-    if (write_u16(box->ref_cnt, fp) != 0)  /* reference_count */
+    if (write_u16(sidx->ref_cnt, fp) != 0)  /* reference_count */
         return -1;
 
-    return offs + box->sz;
+    return offs + sidx->sz;
 }
 
 static off_t
@@ -348,6 +401,71 @@ write_free_box(off_t offs, uint32_t len, FILE *fp)
         return -1;
 
     return offs + len;
+}
+
+static off_t
+write_seg(off_t offs, sidx_box_t *sidx, int idx, long dur,
+          const uint8_t *buf, int len, FILE *fp)
+{
+    sidx_ref_t *ref = sidx->refs + idx;
+    off_t sidx_end, ref_offs, seg_offs;
+    int i;
+    uint32_t u32;
+
+    if (idx > sidx->max_ref_cnt)
+        return -1;
+    if (idx > sidx->ref_cnt)
+        return -1;
+
+    sidx->ref_cnt = idx + 1;
+    ref->ref_type = 0;
+    ref->ref_sz = len;
+    ref->sseg_dur = dur;
+    ref->strt_sap = 1;
+    ref->sap_type = 0;
+    ref->sap_delta_tm = 0;
+
+    ref_offs = offs + SIDX_SIZE_MIN + (SIDX_REF_SIZE * idx);
+    if (fseeko(fp, ref_offs, SEEK_SET) != 0)
+        return -1;
+
+    /* write sidx ref */
+    u32 = (ref->ref_type << 31) + ref->ref_sz;
+    if (write_u32(u32, fp) != 0)/* reference _type and reference _size */
+        return -1;
+    if (write_u32(ref->sseg_dur, fp) != 0)/* subsegment_duration */
+        return -1;
+    u32 = ((ref->strt_sap << 31) + (ref->sap_type << 28) + ref->sap_delta_tm);
+    if (write_u32(u32, fp) != 0) /* SAP */
+        return -1;
+
+    /* update sidx */
+    sidx->ref_cnt = idx;
+    sidx->frst_offs = SIDX_REF_SIZE * (sidx->max_ref_cnt - sidx->ref_cnt);
+    sidx_end = write_sidx_seg(offs, sidx, fp);
+    if (sidx_end == -1)
+        return -1;
+
+    if (sidx->frst_offs > 0) {
+        if (write_free_box(sidx_end, sidx->frst_offs, fp) < 0)
+            return -1;
+    }
+
+    seg_offs = sidx_end + sidx->frst_offs;
+    ref = sidx->refs;
+    for (i = 0; i < idx; i++) {
+        seg_offs += ref->ref_sz;
+        ref++;
+    }
+
+    /* write segment */
+    if (fseeko(fp, seg_offs, SEEK_SET) != 0)
+        return -1;
+    if (fwrite(buf, 1, len, fp) != len) {
+        return -1;
+    }
+
+    return sidx_end;
 }
 
 typedef struct {
@@ -386,20 +504,21 @@ MediaFile_new(PyTypeObject *type, PyObject *args, PyObject *keywords)
 }
 
 static void
-MediaFile_dealloc(inimedia_MediaFileObject *self)
-{
-    Py_XDECREF(self->pathname);
-    if (self->fp)
-        fclose(self->fp);
-    Py_TYPE(self)->tp_free((PyObject *)self);
-}
-
-static void
 _MediaFile_close(inimedia_MediaFileObject *self)
 {
     if (self->fp)
         fclose(self->fp);
+    if (self->sidx.refs)
+        free(self->sidx.refs);
     init_file_attr(self);
+}
+
+static void
+MediaFile_dealloc(inimedia_MediaFileObject *self)
+{
+    Py_XDECREF(self->pathname);
+    _MediaFile_close(self);
+    Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static int
@@ -412,6 +531,9 @@ _MediaFile_open(inimedia_MediaFileObject *self)
 
     if (self->pathname == NULL)
         return -1;
+
+    if (self->fp)
+        return 0;
 
     bytes = PyUnicode_AsEncodedString(self->pathname, "utf-8",
                                       "surrogateescape");
@@ -427,9 +549,11 @@ _MediaFile_open(inimedia_MediaFileObject *self)
     Py_DECREF(bytes);
     if (self->fp) {
         self->sidx_beg = read_init_seg(self->fp);
-        self->sidx_end = read_sidx_seg(self->sidx_beg, &sidx, self->fp);
-        if (self->sidx_end > 0)
-            self->sidx = sidx;
+        if (self->sidx_beg > 0) {
+            self->sidx_end = read_sidx_seg(self->sidx_beg, &sidx, self->fp);
+            if (self->sidx_end > 0)
+                self->sidx = sidx;
+        }
     }
 
     return 0;
@@ -471,16 +595,6 @@ error:
     Py_DECREF(bytes);
     return -1;
 }
-
-static int
-_MediaFile_prepare(inimedia_MediaFileObject *self)
-{
-    if (self->fp == NULL) {
-        return _MediaFile_open(self);
-    }
-    return 0;
-}
-
 
 static int
 MediaFile_init(inimedia_MediaFileObject *self, PyObject *args,
@@ -527,7 +641,6 @@ MediaFile_open(inimedia_MediaFileObject *self)
         PyErr_SetString(PyExc_AttributeError, "pathname");
         return NULL;
     }
-    _MediaFile_close(self);
     if (_MediaFile_open(self) != 0) {
         PyErr_SetString(PyExc_IOError, "file open error");
         return NULL;
@@ -545,6 +658,10 @@ MediaFile_close(inimedia_MediaFileObject *self)
 static PyObject *
 MediaFile_has_iseg(inimedia_MediaFileObject *self)
 {
+    if (_MediaFile_open(self) != 0) {
+        PyErr_SetString(PyExc_IOError, "file open error");
+        return NULL;
+    }
     return Py_BuildValue("i", self->sidx_end > 0);
 }
 
@@ -554,10 +671,10 @@ MediaFile_write_iseg(inimedia_MediaFileObject *self, PyObject *args)
     const uint8_t *buf;
     Py_ssize_t len;
     sidx_box_t sidx;
-    int exp_seg_cnt;
+    int max_seg_cnt;
 
-    if (! PyArg_ParseTuple(args, "y#lLi", &buf, &len,
-                           &sidx.tm_scal, &sidx.erly_pres_tm, &exp_seg_cnt))
+    if (! PyArg_ParseTuple(args, "y#ilL", &buf, &len,
+                           &max_seg_cnt, &sidx.tm_scal, &sidx.erly_pres_tm))
         return NULL;
 
     if (_MediaFile_open_trunk(self) != 0) {
@@ -576,21 +693,69 @@ MediaFile_write_iseg(inimedia_MediaFileObject *self, PyObject *args)
     sidx.ver = 1;               /* XXX only support version 1 */
     sidx.flgs = 0;
     sidx.ref_id = 1;
-    sidx.frst_offs = SIDX_REF_SIZE * exp_seg_cnt;
+    sidx.frst_offs = SIDX_REF_SIZE * max_seg_cnt;
     sidx.ref_cnt = 0;
+    sidx.max_ref_cnt = max_seg_cnt;
+    sidx.refs = malloc(sidx.frst_offs);
+    if (sidx.refs == NULL) {
+        PyErr_SetString(PyExc_SystemError, "sidx references alloc error");
+        return NULL;
+    }
 
     self->sidx_end = write_sidx_seg(self->sidx_beg, &sidx, self->fp);
     if (self->sidx_end < 0) {
         PyErr_SetString(PyExc_IOError, "sidx box write error");
-        return NULL;
+        goto error;
     }
     self->sidx = sidx;
 
     if (sidx.frst_offs > 0) {
         if (write_free_box(self->sidx_end, sidx.frst_offs, self->fp) < 0) {
             PyErr_SetString(PyExc_IOError, "free box write error");
-            return NULL;
+            goto error;
         }
+    }
+
+    return Py_BuildValue("i", 1);
+
+error:
+    free(sidx.refs);
+    return NULL;
+}
+
+static PyObject *
+MediaFile_write_seg(inimedia_MediaFileObject *self, PyObject *args)
+{
+    const uint8_t *buf;
+    Py_ssize_t len;
+    int idx;
+    long dur;
+
+    if (! PyArg_ParseTuple(args, "y#il", &buf, &len, &idx, &dur))
+        return NULL;
+
+    if (_MediaFile_open(self) != 0) {
+        PyErr_SetString(PyExc_IOError, "file open error");
+        return NULL;
+    }
+
+    if (idx > self->sidx.max_ref_cnt) {
+        PyErr_Format(PyExc_IndexError, "segment index is out of range",
+                     self->sidx.ref_cnt, idx);
+        return NULL;
+    }
+
+    if (idx > self->sidx.ref_cnt) {
+        PyErr_Format(PyExc_RuntimeError, "expected index is %d, but %d",
+                     self->sidx.ref_cnt, idx);
+        return NULL;
+    }
+
+    self->sidx_end = write_seg(self->sidx_beg, &self->sidx,
+                               idx, dur, buf, len, self->fp);
+    if (self->sidx_end < 0) {
+        PyErr_SetString(PyExc_IOError, "segment write error");
+        return NULL;
     }
 
     return Py_BuildValue("i", 1);
@@ -606,6 +771,8 @@ static PyMethodDef MediaFile_methods[] = {
     {"has_iseg", (PyCFunction)MediaFile_has_iseg, METH_NOARGS,
      "TODO"},
     {"write_iseg", (PyCFunction)MediaFile_write_iseg, METH_VARARGS,
+     "TODO"},
+    {"write_seg", (PyCFunction)MediaFile_write_seg, METH_VARARGS,
      "TODO"},
     {NULL}
 };
