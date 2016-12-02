@@ -36,12 +36,12 @@
 
     cd inimedia
     python setup.py build
-    
+
 ### Install
-    
+
     cd inimedia
     sudo python setup.py install
-    
+
 ### Example
 
 
