@@ -602,7 +602,7 @@ write_init_seg(const uint8_t *buf, int sz, FILE *fp)
     return sz;
 }
 
-static int
+static int64_t
 write_seg(init_seg_t *iseg, sidx_box_t *sidx, int idx, long dur,
           const uint8_t *buf, int sz, FILE *fp)
 {
@@ -672,7 +672,7 @@ write_seg(init_seg_t *iseg, sidx_box_t *sidx, int idx, long dur,
     if (update_iseg_dur(iseg, tot_dur, fp) == -1)
         return -1;
 
-    return sz;
+    return seg_offs;
 }
 
 typedef struct {
@@ -938,6 +938,7 @@ MediaFile_write_seg(inimedia_MediaFileObject *self, PyObject *args)
     Py_ssize_t len;
     int idx;
     long dur;
+    int64_t seg_offs;
 
     if (! PyArg_ParseTuple(args, "y#il", &buf, &len, &idx, &dur))
         return NULL;
@@ -959,13 +960,14 @@ MediaFile_write_seg(inimedia_MediaFileObject *self, PyObject *args)
         return NULL;
     }
 
-    if (write_seg(&self->iseg,
-                  &self->sidx, idx, dur, buf, len, self->fp) == -1) {
+    seg_offs = write_seg(&self->iseg, &self->sidx, idx, dur, buf, len,
+                         self->fp);
+    if (seg_offs == -1) {
         PyErr_SetString(PyExc_IOError, "segment write error");
         return NULL;
     }
 
-    return Py_BuildValue("i", 1);
+    return Py_BuildValue("L", seg_offs);
 }
 
 static PyMethodDef MediaFile_methods[] = {
