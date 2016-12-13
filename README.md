@@ -70,7 +70,7 @@ if myfile.has_iseg():
 # - seg_idx :: segment index
 # - seg_dur :: segment duration
 # returns
-# -  the file offset of the given segment
+# - the file offset of the given segment
 # throws
 # - IOError :: if an I/O error occurs
 # - IndexErrorK
