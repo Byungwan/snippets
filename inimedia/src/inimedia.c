@@ -987,7 +987,7 @@ static PyMethodDef MediaFile_methods[] = {
 };
 
 static PyTypeObject inimedia_MediaFileType = {
-    PyObject_HEAD_INIT(NULL)
+    PyVarObject_HEAD_INIT(NULL, 0)
     "inimedia.MediaFile",             /* tp_name */
     sizeof(inimedia_MediaFileObject), /* tp_basicsize */
     0,                                /* tp_itemsize */
