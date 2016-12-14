@@ -697,7 +697,11 @@ MediaFile_new(PyTypeObject *type, PyObject *args, PyObject *keywords)
     inimedia_MediaFileObject *self;
     self = (inimedia_MediaFileObject *)type->tp_alloc(type, 0);
     if (self != NULL) {
+#if PY_MAJOR_VERSION >= 3
         self->pathname = PyUnicode_FromString("");
+#else
+        self->pathname = PyString_FromString("");
+#endif
         if (self->pathname == NULL) {
             Py_DECREF(self);
             return NULL;
@@ -724,12 +728,48 @@ MediaFile_dealloc(inimedia_MediaFileObject *self)
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
+static FILE*
+fopen_PyObject(PyObject *pathname, const char* mode)
+{
+    FILE *fp = NULL;
+    char *str;
+#if PY_MAJOR_VERSION >= 3
+    PyObject *bytes;
+    Py_ssize_t len;
+
+    if (pathname == NULL)
+        return NULL;
+
+    bytes = PyUnicode_AsEncodedString(pathname, "utf-8",
+                                      "surrogateescape");
+    if (bytes == NULL)
+        return NULL;
+
+    PyBytes_AsStringAndSize(bytes, &str, &len);
+#else
+    str = PyString_AsString(pathname);
+#endif
+    if (str == NULL || strlen(str) == 0) {
+        goto error;
+    }
+
+    fp = fopen(str, mode);
+
+#if PY_MAJOR_VERSION >= 3
+    Py_DECREF(bytes);
+#endif
+
+    return fp;
+error:
+#if PY_MAJOR_VERSION >= 3
+    Py_DECREF(bytes);
+#endif
+    return NULL;
+}
+
 static int
 _MediaFile_open(inimedia_MediaFileObject *self)
 {
-    PyObject *bytes;
-    char *pathname;
-    Py_ssize_t len;
     int nb;
 
     if (self->pathname == NULL)
@@ -738,63 +778,23 @@ _MediaFile_open(inimedia_MediaFileObject *self)
     if (self->fp)
         return 0;
 
-    bytes = PyUnicode_AsEncodedString(self->pathname, "utf-8",
-                                      "surrogateescape");
-    if (bytes == NULL)
-        return -1;
-
-    PyBytes_AsStringAndSize(bytes, &pathname, &len);
-    if (pathname == NULL || strlen(pathname) == 0) {
-        goto error;
-    }
-
-    self->fp = fopen(pathname, "r+b");
-    Py_DECREF(bytes);
+    self->fp = fopen_PyObject(self->pathname, "r+b");
     if (self->fp) {
         nb = read_init_seg(self->fp, &self->iseg);
         if (nb != -1)
             read_sidx_box(self->iseg.end_offs, &self->sidx, self->fp); /* sidx */
     }
-
-
     return 0;
-
-error:
-    Py_DECREF(bytes);
-    return -1;
 }
 
 static int
 _MediaFile_open_trunk(inimedia_MediaFileObject *self)
 {
-    PyObject *bytes;
-    char *pathname;
-    Py_ssize_t len;
-
-    if (self->pathname == NULL)
-        return -1;
-
-    bytes = PyUnicode_AsEncodedString(self->pathname, "utf-8",
-                                      "surrogateescape");
-    if (bytes == NULL)
-        return -1;
-
-    PyBytes_AsStringAndSize(bytes, &pathname, &len);
-    if (pathname == NULL || strlen(pathname) == 0) {
-        goto error;
-    }
-
     _MediaFile_close(self);
-    self->fp = fopen(pathname, "w+b");
-    Py_DECREF(bytes);
+    self->fp = fopen_PyObject(self->pathname, "w+b");
     if (self->fp == NULL)
         return -1;
-
     return 0;
-
-error:
-    Py_DECREF(bytes);
-    return -1;
 }
 
 static int
@@ -806,7 +806,11 @@ MediaFile_init(inimedia_MediaFileObject *self, PyObject *args,
     /* if (! PyArg_ParseTupleAndKeywords(args, keywords, */
     /*                                   "!U", keywordList, &pathname)) */
     /*     return -1; */
+#if PY_MAJOR_VERSION >= 3
     if (! PyArg_ParseTuple(args, "U", &pathname))
+#else
+    if (! PyArg_ParseTuple(args, "S", &pathname))
+#endif
         return -1;
 
     if (pathname) {
@@ -875,8 +879,13 @@ MediaFile_write_iseg(inimedia_MediaFileObject *self, PyObject *args)
     sidx_box_t sidx;
     int max_seg_cnt;
 
+#if PY_MAJOR_VERSION >= 3
     if (! PyArg_ParseTuple(args, "y#ilL", &buf, &len,
                            &max_seg_cnt, &sidx.tm_scal, &sidx.erly_pres_tm))
+#else
+    if (! PyArg_ParseTuple(args, "s#ilL", &buf, &len,
+                           &max_seg_cnt, &sidx.tm_scal, &sidx.erly_pres_tm))
+#endif
         return NULL;
 
     if (_MediaFile_open_trunk(self) == -1) {
@@ -940,7 +949,11 @@ MediaFile_write_seg(inimedia_MediaFileObject *self, PyObject *args)
     long dur;
     int64_t seg_offs;
 
+#if PY_MAJOR_VERSION >= 3
     if (! PyArg_ParseTuple(args, "y#il", &buf, &len, &idx, &dur))
+#else
+    if (! PyArg_ParseTuple(args, "s#il", &buf, &len, &idx, &dur))
+#endif
         return NULL;
 
     if (_MediaFile_open(self) == -1) {
@@ -949,8 +962,7 @@ MediaFile_write_seg(inimedia_MediaFileObject *self, PyObject *args)
     }
 
     if (idx > self->sidx.max_ref_cnt) {
-        PyErr_Format(PyExc_IndexError, "segment index is out of range",
-                     self->sidx.ref_cnt, idx);
+        PyErr_Format(PyExc_IndexError, "segment index is out of range");
         return NULL;
     }
 
@@ -987,7 +999,12 @@ static PyMethodDef MediaFile_methods[] = {
 };
 
 static PyTypeObject inimedia_MediaFileType = {
+#if PY_MAJOR_VERSION >= 3
     PyVarObject_HEAD_INIT(NULL, 0)
+#else
+    PyObject_HEAD_INIT(NULL)
+    0,                                /* ob_size */
+#endif
     "inimedia.MediaFile",             /* tp_name */
     sizeof(inimedia_MediaFileObject), /* tp_basicsize */
     0,                                /* tp_itemsize */
@@ -1027,26 +1044,60 @@ static PyTypeObject inimedia_MediaFileType = {
     MediaFile_new,                    /* tp_new */
 };
 
+#define INIMEDIA_MODULE_NAME "inimedia"
+#define INIMEDIA_MODULE_DOC  "module for handling multimedia data"
+
+#if PY_MAJOR_VERSION >= 3
 static PyModuleDef inimediamodule = {
     PyModuleDef_HEAD_INIT,
-    "inimedia",
-    "module for handling multimedia data",
-    -1,
-    NULL, NULL, NULL, NULL, NULL
+    INIMEDIA_MODULE_NAME,             /* m_name */
+    INIMEDIA_MODULE_DOC,              /* m_doc */
+    -1,                               /* m_size */
+    NULL,                             /* m_methods */
+    NULL,                             /* m_reload */
+    NULL,                             /* m_traverse */
+    NULL,                             /* m_clear */
+    NULL                              /* m_free */
 };
+  #define MOD_ERROR_VAL NULL
+  #define MOD_SUCCESS_VAL(val) val
+#else
+static PyMethodDef module_methods[] = {
+    {NULL}  /* Sentinel */
+};
+  #ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
+    #define PyMODINIT_FUNC void
+  #endif
+
+  #define MOD_ERROR_VAL
+  #define MOD_SUCCESS_VAL(val)
+#endif  /* PY_MAJOR_VERSION >= 3 */
 
 PyMODINIT_FUNC
+#if PY_MAJOR_VERSION >= 3
 PyInit_inimedia(void)
+#else
+initinimedia(void)
+#endif
 {
-    PyObject *m;
+    PyObject *m = NULL;
+
     if (PyType_Ready(&inimedia_MediaFileType) < 0)
-        return NULL;
+        return MOD_ERROR_VAL;
+
+#if PY_MAJOR_VERSION >= 3
     m = PyModule_Create(&inimediamodule);
+#else
+    m = Py_InitModule3(INIMEDIA_MODULE_NAME, module_methods,
+                       INIMEDIA_MODULE_DOC);
+#endif
     if (m == NULL)
-        return NULL;
+        return MOD_ERROR_VAL;
+
     Py_INCREF(&inimedia_MediaFileType);
     PyModule_AddObject(m, "MediaFile", (PyObject *)&inimedia_MediaFileType);
-    return m;
+
+    return MOD_SUCCESS_VAL(m);
 }
 
 /* Local Variables: */
