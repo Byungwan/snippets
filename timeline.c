@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,20 +28,39 @@ static char hexconvtab[] = "0123456789abcdef";
 int main(int argc, char **argv) {
     redisContext *c;
     redisReply *reply;
-    const char *key;
-    int port;
-    const char *hostname;
+    int opt;
+    const char *key = NULL;
+    int port = 6379;
+    const char *hostname = "127.0.0.1";
+    int verbose = 0;
     seg_time_t st;
     unsigned int i, j;
 
-    if (argc < 2) {
+
+    while ((opt = getopt(argc, argv, "k:h:p:V")) != -1) {
+        switch (opt) {
+        case 'k':
+            key = optarg;
+            break;
+        case 'h':
+            hostname = optarg;
+            break;
+        case 'p':
+            port = atoi(optarg);
+            break;
+        case 'V':
+            verbose = 1;
+            break;
+        default: /* '?' */
+            fprintf(stderr, "Usage: timeline KEY [PORT] [HOSTNAME]\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (key == NULL) {
         fprintf(stderr, "Usage: timeline KEY [PORT] [HOSTNAME]\n");
         exit(EXIT_FAILURE);
     }
-
-    key = argv[1];
-    port = (argc > 2) ? atoi(argv[2]) : 6379;
-    hostname = (argc > 3) ? argv[3] : "127.0.0.1";
 
     struct timeval timeout = { 1, 500000 }; // 1.5 seconds
     c = redisConnectWithTimeout(hostname, port, timeout);
@@ -72,12 +92,14 @@ int main(int argc, char **argv) {
             printf("(%05u) %"PRId64" %u %"PRId64" %x %"PRId64" %u %u %u ",
                    i,
                    st.start_time, st.seq, st.duration, st.flags, st.offset, st.ts_size, st.mdat_offset, st.size);
-            for (j = 0; j < sizeof(st.key_id); j++) {
-                putchar(hexconvtab[st.key_id[j] >> 4]);
-                putchar(hexconvtab[st.key_id[j] & 15]);
+            if (verbose) {
+                for (j = 0; j < sizeof(st.key_id); j++) {
+                    putchar(hexconvtab[st.key_id[j] >> 4]);
+                    putchar(hexconvtab[st.key_id[j] & 15]);
+                }
+                printf(" %s", st.path);
             }
-            printf("\n");
-            printf(" %s\n", st.path);
+            putchar('\n');
         }
     }
     freeReplyObject(reply);
