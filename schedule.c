@@ -8,20 +8,14 @@
 #include <limits.h>             /* PATH_MAX */
 #include <hiredis/hiredis.h>
 
-typedef struct __attribute__((__packed__)) seg_time_s {
+#define JSON_MAX 10000
+
+typedef struct __attribute__((__packed__)) ass_schd_s {
     uint64_t start_time;
-    uint32_t seq;
     uint64_t duration;
     uint32_t flags;
-    uint64_t offset;
-    uint32_t ts_size;
-    uint32_t mdat_offset;
-    uint32_t size;
-    uint8_t  key_id[16];
-    char     path[PATH_MAX+1];
-} seg_time_t;
-
-static char hexconvtab[] = "0123456789abcdef";
+    char     json[JSON_MAX+1];
+} ass_schd_t;
 
 int main(int argc, char **argv) {
     redisContext *c;
@@ -31,8 +25,8 @@ int main(int argc, char **argv) {
     int port = 6379;
     const char *hostname = "127.0.0.1";
     int verbose = 0;
-    seg_time_t st;
-    unsigned int i, j;
+    ass_schd_t as;
+    unsigned int i;
 
 
     while ((opt = getopt(argc, argv, "k:h:p:V")) != -1) {
@@ -50,13 +44,13 @@ int main(int argc, char **argv) {
             verbose = 1;
             break;
         default: /* '?' */
-            fprintf(stderr, "Usage: timeline KEY [PORT] [HOSTNAME]\n");
+            fprintf(stderr, "Usage: schedule KEY [PORT] [HOSTNAME]\n");
             exit(EXIT_FAILURE);
         }
     }
 
     if (key == NULL) {
-        fprintf(stderr, "Usage: timeline KEY [PORT] [HOSTNAME]\n");
+        fprintf(stderr, "Usage: schedule KEY [PORT] [HOSTNAME]\n");
         exit(EXIT_FAILURE);
     }
 
@@ -75,27 +69,18 @@ int main(int argc, char **argv) {
     reply = redisCommand(c, "ZRANGE %s 0 -1", key);
     if (reply->type == REDIS_REPLY_ARRAY) {
         for (i = 0; i < reply->elements; i++) {
-            memset(&st, 0, sizeof(st));
-            memcpy(&st, reply->element[i]->str, reply->element[i]->len);
+            memset(&as, 0, sizeof(as));
+            memcpy(&as, reply->element[i]->str, reply->element[i]->len);
 
-            st.start_time  = be64toh(st.start_time);
-            st.seq         = be32toh(st.seq);
-            st.duration    = be64toh(st.duration);
-            st.flags       = be32toh(st.flags);
-            st.offset      = be64toh(st.offset);
-            st.ts_size     = be32toh(st.ts_size);
-            st.mdat_offset = be32toh(st.mdat_offset);
-            st.size        = be32toh(st.size);
+            as.start_time  = be64toh(as.start_time);
+            as.duration    = be64toh(as.duration);
+            as.flags       = be32toh(as.flags);
 
-            printf("(%05u) %"PRId64" %u %"PRId64" %x %"PRId64" %u %u %u ",
+            printf("(%05u) %"PRId64" %"PRId64" %x ",
                    i,
-                   st.start_time, st.seq, st.duration, st.flags, st.offset, st.ts_size, st.mdat_offset, st.size);
+                   as.start_time, as.duration, as.flags);
             if (verbose) {
-                for (j = 0; j < sizeof(st.key_id); j++) {
-                    putchar(hexconvtab[st.key_id[j] >> 4]);
-                    putchar(hexconvtab[st.key_id[j] & 15]);
-                }
-                printf(" %s", st.path);
+                printf(" %s", as.json);
             }
             putchar('\n');
         }
@@ -108,5 +93,5 @@ int main(int argc, char **argv) {
 }
 
 /* Local Variables: */
-/* compile-command:"gcc -Wall -g -o timeline timeline.c -lhiredis" */
+/* compile-command:"gcc -Wall -g -o schedule schedule.c -lhiredis" */
 /* End: */
