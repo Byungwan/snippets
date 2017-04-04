@@ -33,4 +33,4 @@ fi
 
 line_count=`cat ${count_file}`
 
-sed "s/\\\$TOTAL_COUNT\\\$/${line_count}/g" "${input_file}"
+sed "s/^\*\\\$TOTAL_COUNT\\\$/\*${line_count}/" "${input_file}"
