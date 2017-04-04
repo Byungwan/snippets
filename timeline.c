@@ -6,7 +6,10 @@
 #include <inttypes.h>           /* PRId64 */
 #include <endian.h>             /* htobe64 */
 #include <limits.h>             /* PATH_MAX */
+#include <errno.h>
 #include <hiredis/hiredis.h>
+
+#define PROTO_INLINE_MAX_SIZE   (1024*64) /* Max size of inline reads */
 
 typedef struct __attribute__((__packed__)) seg_time_s {
     uint64_t start_time;
@@ -55,7 +58,8 @@ static void display_timeline(void *data, size_t size)
     st.size        = be32toh(st.size);
 
     printf("%"PRId64" %u %"PRId64" %x %"PRId64" %u %u %u ",
-           st.start_time, st.seq, st.duration, st.flags, st.offset, st.ts_size, st.mdat_offset, st.size);
+           st.start_time, st.seq, st.duration, st.flags, st.offset,
+           st.ts_size, st.mdat_offset, st.size);
     if (verbose) {
         for (i = 0; i < sizeof(st.key_id); i++) {
             putchar(hexconvtab[st.key_id[i] >> 4]);
@@ -66,7 +70,30 @@ static void display_timeline(void *data, size_t size)
     putchar('\n');
 }
 
-static void redis_timeline(const char *hostname, int port, const char *key)
+long str2ll(const char *str)
+{
+    char *endptr;
+    long long val;
+
+    val = strtoll(str, &endptr, 10);
+
+    /* Check for various possible errors */
+    if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+        || (errno != 0 && val == 0)) {
+        perror("Error");
+        exit(EXIT_FAILURE);
+    }
+
+    if (endptr == str) {
+        fprintf(stderr, "Error: No digits were found\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return val;
+}
+
+static void display_redis_timeline(const char *hostname, int port,
+                                   const char *key)
 {
     redisContext *c;
     redisReply *reply;
@@ -76,10 +103,10 @@ static void redis_timeline(const char *hostname, int port, const char *key)
     c = redisConnectWithTimeout(hostname, port, timeout);
     if (c == NULL || c->err) {
         if (c) {
-            printf("Connection error: %s\n", c->errstr);
+            fprintf(stderr, "Error: %s\n", c->errstr);
             redisFree(c);
         } else {
-            printf("Connection error: can't allocate redis context\n");
+            fprintf(stderr, "Error: Can't allocate redis context\n");
         }
         exit(EXIT_FAILURE);
     }
@@ -95,14 +122,120 @@ static void redis_timeline(const char *hostname, int port, const char *key)
     redisFree(c);
 }
 
+static void display_file_timeline(const char *filename)
+{
+    FILE *fp;
+    char *line;
+    char *newline = NULL;
+    long multibulklen, bulkcnt, bulklen = -1;
+
+    line = malloc(PROTO_INLINE_MAX_SIZE + 1);
+    if (line == NULL) {
+        fprintf(stderr, "Error: Can't allocate read buffer\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (strcmp(filename, "-") == 0) {
+        fp = stdin;
+    } else {
+        fp = fopen(filename, "rb");
+        if (fp == NULL) {
+            perror("Error");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    /* multibulk length */
+    if (fgets(line, PROTO_INLINE_MAX_SIZE, fp) == NULL) {
+        fprintf(stderr, "Error: too big mbulk count string\n");
+        exit(EXIT_FAILURE);
+    }
+    newline = strchr(line, '\r');
+    if (newline == NULL) {
+        fprintf(stderr, "Error: too big mbulk count string\n");
+        exit(EXIT_FAILURE);
+    }
+    *newline = '\0';
+    if (line[0] != '*') {
+        fprintf(stderr, "Error: expected '*', got '%c'\n", line[0]);
+        exit(EXIT_FAILURE);
+    }
+    multibulklen = str2ll(line+1);
+    if (multibulklen > 1024*1024) {
+        fprintf(stderr, "Error: invalid multibulk length\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (bulkcnt = 0; multibulklen > bulkcnt; bulkcnt++) {
+        /* bulk length */
+        if (fgets(line, PROTO_INLINE_MAX_SIZE, fp) == NULL) {
+            fprintf(stderr, "Error: too big bulk count string\n");
+            exit(EXIT_FAILURE);
+        }
+        newline = strchr(line, '\r');
+        if (newline == NULL) {
+            fprintf(stderr, "Error: too big bulk count string\n");
+            exit(EXIT_FAILURE);
+        }
+        *newline = '\0';
+        if (line[0] != '$') {
+            fprintf(stderr, "Error: expected '$', got '%c'\n", line[0]);
+            exit(EXIT_FAILURE);
+        }
+        bulklen = str2ll(line+1);
+        /* XXX Use PROTO_INLINE_MAX_SIZE instead of 512*1024*1024 */
+        if (bulklen < 0 || bulklen > PROTO_INLINE_MAX_SIZE) {
+            fprintf(stderr, "Error: invalid bulk length\n");
+            exit(EXIT_FAILURE);
+        }
+
+        /* bulk argument */
+        if (fread(line, bulklen+2, 1, fp) != 1) {
+            fprintf(stderr, "Error: Not enough bulk data\n");
+            exit(EXIT_FAILURE);
+        }
+        line[bulklen] = '\0';
+        if (bulkcnt == 0) {
+            if (strcmp(line, "ZADD") != 0) {
+                fprintf(stderr, "Error: expected 'ZADD', got '%s'\n", line);
+                exit(EXIT_FAILURE);
+            }
+        } else if (bulkcnt == 1) {
+            if (verbose) {
+                printf("key : '%s'\n", line);
+            }
+        } else {
+            if ((bulkcnt % 2) == 1) {
+                display_timeline(line, bulklen);
+            } else {
+                /* score  */
+                if (strcmp(line, "0") != 0) {
+                    fprintf(stderr, "Error: expected '0', got '%s'\n", line);
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+    }
+
+    free(line);
+    if (fp != NULL) {
+        if (fp != stdin)
+            fclose(fp);
+    }
+}
+
 int main(int argc, char **argv) {
     int opt;
     const char *key = NULL;
     int port = 6379;
     const char *hostname = "127.0.0.1";
+    const char *filename = NULL;
 
-    while ((opt = getopt(argc, argv, "k:h:p:V")) != -1) {
+    while ((opt = getopt(argc, argv, "f:k:h:p:V")) != -1) {
         switch (opt) {
+        case 'f':
+            filename = optarg;
+            break;
         case 'k':
             key = optarg;
             break;
@@ -121,13 +254,15 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (key == NULL) {
+    if (key == NULL && filename == NULL) {
         display_usage();
         exit(EXIT_FAILURE);
     }
 
     if (key != NULL) {
-        redis_timeline(hostname, port, key);
+        display_redis_timeline(hostname, port, key);
+    } else if (filename != NULL) {
+        display_file_timeline(filename);
     }
 
     return 0;
