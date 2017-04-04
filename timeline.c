@@ -25,8 +25,8 @@ typedef struct __attribute__((__packed__)) seg_time_s {
 } seg_time_t;
 
 static char hexconvtab[] = "0123456789abcdef";
-
 static int verbose = 0;
+
 
 static void display_usage()
 {
@@ -39,6 +39,7 @@ static void display_usage()
             " From FILE\n"
             "  -f <file>          Input RDB dump file, `-' means STDIN\n\n");
 }
+
 
 static void display_timeline(void *data, size_t size)
 {
@@ -70,7 +71,8 @@ static void display_timeline(void *data, size_t size)
     putchar('\n');
 }
 
-long str2ll(const char *str)
+
+static long str2ll(const char *str)
 {
     char *endptr;
     long long val;
@@ -91,6 +93,7 @@ long str2ll(const char *str)
 
     return val;
 }
+
 
 static void display_redis_timeline(const char *hostname, int port,
                                    const char *key)
@@ -121,6 +124,7 @@ static void display_redis_timeline(const char *hostname, int port,
 
     redisFree(c);
 }
+
 
 static void display_file_timeline(const char *filename)
 {
@@ -223,6 +227,7 @@ static void display_file_timeline(const char *filename)
             fclose(fp);
     }
 }
+
 
 int main(int argc, char **argv) {
     int opt;
