@@ -230,7 +230,8 @@ static void display_file_timeline(const char *filename)
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     int opt;
     const char *key = NULL;
     int port = 6379;
