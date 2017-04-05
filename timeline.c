@@ -10,6 +10,7 @@
 #include <hiredis/hiredis.h>
 
 #define PROTO_INLINE_MAX_SIZE   (1024*64) /* Max size of inline reads */
+#define CR_NL_SIZE              2
 
 typedef struct __attribute__((__packed__)) seg_time_s {
     uint64_t start_time;
@@ -133,7 +134,7 @@ static void display_file_timeline(const char *filename)
     char *newline = NULL;
     long multibulklen, bulkcnt, bulklen = -1;
 
-    line = malloc(PROTO_INLINE_MAX_SIZE + 1);
+    line = malloc(PROTO_INLINE_MAX_SIZE + CR_NL_SIZE);
     if (line == NULL) {
         fprintf(stderr, "Error: Can't allocate read buffer\n");
         exit(EXIT_FAILURE);
@@ -194,7 +195,7 @@ static void display_file_timeline(const char *filename)
         }
 
         /* bulk argument */
-        if (fread(line, bulklen+2, 1, fp) != 1) {
+        if (fread(line, bulklen+CR_NL_SIZE, 1, fp) != 1) {
             fprintf(stderr, "Error: Not enough bulk data\n");
             exit(EXIT_FAILURE);
         }
