@@ -27,7 +27,7 @@ static int verbose = 0;
 static void display_usage()
 {
     fprintf(stderr,
-            "Usage: timeline [OPTION]\n\n"
+            "Usage: schedule [OPTION]\n\n"
             " From REDIS\n"
             "  -h <hostname>      Server hostname (default: 127.0.0.1)\n"
             "  -p <port>          Server port (default: 6379)\n"
