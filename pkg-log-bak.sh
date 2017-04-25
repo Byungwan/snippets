@@ -2,7 +2,7 @@
 
 echoerr() { echo "$@" 1>&2; }
 
-function gzip_log_dir() {
+gzip_log_dir() {
     if [ $# -eq 0 ]; then
         echoerr "gzip_log_dir() takes exactly 1 argument (0 given)"
         return 1
