@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--MP4Box dump trace-->
+<IsoMediaFile Name="test-out.mp4">
+<FileTypeBox MajorBrand="isom" MinorVersion="0">
+<BoxInfo Size="28" Type="ftyp"/>
+<BrandEntry AlternateBrand="iso2"/>
+<BrandEntry AlternateBrand="iso6"/>
+<BrandEntry AlternateBrand="dash"/>
+</FileTypeBox>
+<MovieBox>
+<BoxInfo Size="615" Type="moov"/>
+<MovieHeaderBox CreationTime="3559636148" ModificationTime="3559636148" TimeScale="10000000" Duration="75093333" NextTrackID="3">
+<BoxInfo Size="120" Type="mvhd"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+</MovieHeaderBox>
+<MovieExtendsBox>
+<BoxInfo Size="60" Type="mvex"/>
+<MovieExtendsHeaderBox fragmentDuration="75093333" >
+<BoxInfo Size="20" Type="mehd"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+</MovieExtendsHeaderBox>
+<TrackExtendsBox TrackID="2" SampleDescriptionIndex="1" SampleDuration="0" SampleSize="0">
+<DefaultSampleFlags IsLeading="0" SampleDependsOn="0" SampleIsDependedOn="0" SampleHasRedundancy="0" SamplePadding="0" SampleSync="0" SampleDegradationPriority="0"/>
+<BoxInfo Size="32" Type="trex"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+</TrackExtendsBox>
+</MovieExtendsBox>
+<TrackBox>
+<BoxInfo Size="427" Type="trak"/>
+<TrackHeaderBox CreationTime="3559636148" ModificationTime="3559636148" TrackID="2" Duration="0" Volume="1.00">
+<BoxInfo Size="104" Type="tkhd"/>
+<FullBoxInfo Version="1" Flags="0x1"/>
+</TrackHeaderBox>
+<MediaBox>
+<BoxInfo Size="315" Type="mdia"/>
+<MediaHeaderBox CreationTime="3559636148" ModificationTime="3559636148" TimeScale="10000000" Duration="75093333" LanguageCode="eng">
+<BoxInfo Size="44" Type="mdhd"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+</MediaHeaderBox>
+<HandlerBox Type="soun" Name="" reserved1="0" reserved2="data:application/octet-string,000000000000000000000000">
+<BoxInfo Size="33" Type="hdlr"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+</HandlerBox>
+<MediaInformationBox>
+<BoxInfo Size="230" Type="minf"/>
+<SoundMediaHeaderBox>
+<BoxInfo Size="16" Type="smhd"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+</SoundMediaHeaderBox>
+<DataInformationBox><BoxInfo Size="36" Type="dinf"/>
+<DataReferenceBox>
+<BoxInfo Size="28" Type="dref"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<URLDataEntryBox>
+<!--Data is contained in the movie file-->
+<BoxInfo Size="12" Type="url "/>
+<FullBoxInfo Version="0" Flags="0x1"/>
+</URLDataEntryBox>
+</DataReferenceBox>
+</DataInformationBox>
+<SampleTableBox>
+<BoxInfo Size="170" Type="stbl"/>
+<SampleDescriptionBox>
+<BoxInfo Size="94" Type="stsd"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<MPEGAudioSampleDescriptionBox DataReferenceIndex="1" SampleRate="48000" Channels="2" BitsPerSample="16">
+<BoxInfo Size="78" Type="mp4a"/>
+<MPEG4ESDescriptorBox>
+<BoxInfo Size="42" Type="esds"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+ <ES_Descriptor ES_ID="es0" >
+  <decConfigDescr>
+   <DecoderConfigDescriptor objectTypeIndication="64" streamType="5" bufferSizeDB="1536" >
+    <decSpecificInfo>
+     <DecoderSpecificInfo type="auto" src="data:application/octet-string,%11%90%56%E5%00" />
+    </decSpecificInfo>
+   </DecoderConfigDescriptor>
+  </decConfigDescr>
+  <slConfigDescr>
+   <SLConfigDescriptor >
+    <predefined value="2" />
+    <custom >
+    </custom>
+   </SLConfigDescriptor>
+  </slConfigDescr>
+ </ES_Descriptor>
+</MPEG4ESDescriptorBox>
+</MPEGAudioSampleDescriptionBox>
+</SampleDescriptionBox>
+<TimeToSampleBox EntryCount="0">
+<BoxInfo Size="16" Type="stts"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<!-- counted 0 samples in STTS entries -->
+</TimeToSampleBox>
+<SampleToChunkBox EntryCount="0">
+<BoxInfo Size="16" Type="stsc"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<!-- counted 0 samples in STSC entries (could be less than sample count) -->
+</SampleToChunkBox>
+<SampleSizeBox SampleCount="0">
+<BoxInfo Size="20" Type="stsz"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<!--WARNING: No Sample Size indications-->
+</SampleSizeBox>
+<ChunkOffsetBox EntryCount="0">
+<BoxInfo Size="16" Type="stco"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<!--Warning: No Chunk Offsets indications-->
+</ChunkOffsetBox>
+</SampleTableBox>
+</MediaInformationBox>
+</MediaBox>
+</TrackBox>
+</MovieBox>
+<SegmentIndexBox reference_ID="1" timescale="10000000" earliest_presentation_time="0" first_offset="2376">
+<BoxInfo Size="64" Type="sidx"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+<Reference type="0" size="51862" duration="37546667" startsWithSAP="1" SAP_type="0" SAPDeltaTime="0"/>
+<Reference type="0" size="49662" duration="37546666" startsWithSAP="1" SAP_type="0" SAPDeltaTime="0"/>
+</SegmentIndexBox>
+<FreeSpaceBox size="2368">
+<BoxInfo Size="2376" Type="free"/>
+</FreeSpaceBox>
+<MovieFragmentBox TrackFragments="1">
+<BoxInfo Size="1692" Type="moof"/>
+<MovieFragmentHeaderBox FragmentSequenceNumber="1">
+<BoxInfo Size="16" Type="mfhd"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+</MovieFragmentHeaderBox>
+<TrackFragmentBox>
+<BoxInfo Size="1668" Type="traf"/>
+<TrackFragmentHeaderBox TrackID="2" BaseDataOffset="moof-or-previous-traf" SamplePadding="0" Sync="1" DegradationPriority="0" IsLeading="0" DependsOn="0" IsDependedOn="0" HasRedundancy="0">
+<BoxInfo Size="20" Type="tfhd"/>
+<FullBoxInfo Version="0" Flags="0x20"/>
+</TrackFragmentHeaderBox>
+<SampleDependencyTypeBox SampleCount="176">
+<BoxInfo Size="188" Type="sdtp"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<SampleDependencyEntry dependsOnOther="no" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+</SampleDependencyTypeBox>
+<TrackFragmentBaseMediaDecodeTimeBox baseMediaDecodeTime="0">
+<BoxInfo Size="20" Type="tfdt"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+</TrackFragmentBaseMediaDecodeTimeBox>
+<TrackRunBox SampleCount="176" DataOffset="1700">
+<FirstSampleFlags IsLeading="0" SampleDependsOn="0" SampleIsDependedOn="0" SampleHasRedundancy="0" SamplePadding="0" SampleSync="1" SampleDegradationPriority="0"/>
+<BoxInfo Size="1432" Type="trun"/>
+<FullBoxInfo Version="0" Flags="0x305"/>
+<TrackRunEntry Duration="213333" Size="96"/>
+<TrackRunEntry Duration="213334" Size="77"/>
+<TrackRunEntry Duration="213333" Size="158"/>
+<TrackRunEntry Duration="213333" Size="192"/>
+<TrackRunEntry Duration="213334" Size="685"/>
+<TrackRunEntry Duration="213333" Size="319"/>
+<TrackRunEntry Duration="213333" Size="301"/>
+<TrackRunEntry Duration="213334" Size="409"/>
+<TrackRunEntry Duration="213333" Size="337"/>
+<TrackRunEntry Duration="213333" Size="410"/>
+<TrackRunEntry Duration="213334" Size="318"/>
+<TrackRunEntry Duration="213333" Size="356"/>
+<TrackRunEntry Duration="213333" Size="293"/>
+<TrackRunEntry Duration="213334" Size="303"/>
+<TrackRunEntry Duration="213333" Size="340"/>
+<TrackRunEntry Duration="213333" Size="299"/>
+<TrackRunEntry Duration="213334" Size="291"/>
+<TrackRunEntry Duration="213333" Size="294"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="336"/>
+<TrackRunEntry Duration="213333" Size="313"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="298"/>
+<TrackRunEntry Duration="213333" Size="266"/>
+<TrackRunEntry Duration="213333" Size="321"/>
+<TrackRunEntry Duration="213334" Size="295"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213333" Size="278"/>
+<TrackRunEntry Duration="213334" Size="314"/>
+<TrackRunEntry Duration="213333" Size="315"/>
+<TrackRunEntry Duration="213333" Size="310"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213333" Size="266"/>
+<TrackRunEntry Duration="213334" Size="272"/>
+<TrackRunEntry Duration="213333" Size="277"/>
+<TrackRunEntry Duration="213333" Size="307"/>
+<TrackRunEntry Duration="213334" Size="299"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213333" Size="298"/>
+<TrackRunEntry Duration="213334" Size="292"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="299"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="287"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213334" Size="275"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213333" Size="357"/>
+<TrackRunEntry Duration="213334" Size="299"/>
+<TrackRunEntry Duration="213333" Size="263"/>
+<TrackRunEntry Duration="213333" Size="297"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="255"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="272"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213333" Size="251"/>
+<TrackRunEntry Duration="213334" Size="251"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="286"/>
+<TrackRunEntry Duration="213333" Size="275"/>
+<TrackRunEntry Duration="213333" Size="284"/>
+<TrackRunEntry Duration="213334" Size="296"/>
+<TrackRunEntry Duration="213333" Size="289"/>
+<TrackRunEntry Duration="213333" Size="256"/>
+<TrackRunEntry Duration="213334" Size="279"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213334" Size="270"/>
+<TrackRunEntry Duration="213333" Size="289"/>
+<TrackRunEntry Duration="213333" Size="295"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="261"/>
+<TrackRunEntry Duration="213333" Size="248"/>
+<TrackRunEntry Duration="213334" Size="281"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213333" Size="264"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="283"/>
+<TrackRunEntry Duration="213333" Size="283"/>
+<TrackRunEntry Duration="213334" Size="265"/>
+<TrackRunEntry Duration="213333" Size="265"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="260"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213334" Size="265"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213333" Size="257"/>
+<TrackRunEntry Duration="213334" Size="253"/>
+<TrackRunEntry Duration="213333" Size="283"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213334" Size="266"/>
+<TrackRunEntry Duration="213333" Size="268"/>
+<TrackRunEntry Duration="213333" Size="261"/>
+<TrackRunEntry Duration="213334" Size="290"/>
+<TrackRunEntry Duration="213333" Size="268"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="293"/>
+<TrackRunEntry Duration="213333" Size="264"/>
+<TrackRunEntry Duration="213334" Size="280"/>
+<TrackRunEntry Duration="213333" Size="264"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="283"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213334" Size="323"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213333" Size="267"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213334" Size="281"/>
+<TrackRunEntry Duration="213333" Size="272"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213334" Size="288"/>
+<TrackRunEntry Duration="213333" Size="284"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213334" Size="293"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="293"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213333" Size="307"/>
+<TrackRunEntry Duration="213334" Size="262"/>
+<TrackRunEntry Duration="213333" Size="309"/>
+<TrackRunEntry Duration="213333" Size="316"/>
+<TrackRunEntry Duration="213334" Size="283"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213333" Size="293"/>
+<TrackRunEntry Duration="213334" Size="275"/>
+<TrackRunEntry Duration="213333" Size="265"/>
+<TrackRunEntry Duration="213333" Size="298"/>
+<TrackRunEntry Duration="213334" Size="286"/>
+<TrackRunEntry Duration="213333" Size="288"/>
+<TrackRunEntry Duration="213333" Size="287"/>
+<TrackRunEntry Duration="213334" Size="297"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213334" Size="279"/>
+<TrackRunEntry Duration="213333" Size="298"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213334" Size="289"/>
+<TrackRunEntry Duration="213333" Size="305"/>
+<TrackRunEntry Duration="213333" Size="320"/>
+<TrackRunEntry Duration="213334" Size="305"/>
+<TrackRunEntry Duration="213333" Size="299"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213334" Size="284"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213334" Size="303"/>
+<TrackRunEntry Duration="213333" Size="298"/>
+<TrackRunEntry Duration="213333" Size="306"/>
+<TrackRunEntry Duration="213334" Size="310"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213334" Size="293"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+<TrackRunEntry Duration="213334" Size="286"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213333" Size="278"/>
+<TrackRunEntry Duration="213334" Size="270"/>
+<TrackRunEntry Duration="213333" Size="286"/>
+<TrackRunEntry Duration="213333" Size="313"/>
+<TrackRunEntry Duration="213334" Size="307"/>
+</TrackRunBox>
+</TrackFragmentBox>
+</MovieFragmentBox>
+<MediaDataBox dataSize="50162">
+<BoxInfo Size="50170" Type="mdat"/>
+</MediaDataBox>
+<MovieFragmentBox TrackFragments="1">
+<BoxInfo Size="1692" Type="moof"/>
+<MovieFragmentHeaderBox FragmentSequenceNumber="2">
+<BoxInfo Size="16" Type="mfhd"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+</MovieFragmentHeaderBox>
+<TrackFragmentBox>
+<BoxInfo Size="1668" Type="traf"/>
+<TrackFragmentHeaderBox TrackID="2" BaseDataOffset="moof-or-previous-traf" SamplePadding="0" Sync="1" DegradationPriority="0" IsLeading="0" DependsOn="0" IsDependedOn="0" HasRedundancy="0">
+<BoxInfo Size="20" Type="tfhd"/>
+<FullBoxInfo Version="0" Flags="0x20"/>
+</TrackFragmentHeaderBox>
+<SampleDependencyTypeBox SampleCount="176">
+<BoxInfo Size="188" Type="sdtp"/>
+<FullBoxInfo Version="0" Flags="0x0"/>
+<SampleDependencyEntry dependsOnOther="no" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+<SampleDependencyEntry dependsOnOther="yes" dependedOn="yes" hasRedundancy="unknown"  />
+</SampleDependencyTypeBox>
+<TrackFragmentBaseMediaDecodeTimeBox baseMediaDecodeTime="37546667">
+<BoxInfo Size="20" Type="tfdt"/>
+<FullBoxInfo Version="1" Flags="0x0"/>
+</TrackFragmentBaseMediaDecodeTimeBox>
+<TrackRunBox SampleCount="176" DataOffset="1700">
+<FirstSampleFlags IsLeading="0" SampleDependsOn="0" SampleIsDependedOn="0" SampleHasRedundancy="0" SamplePadding="0" SampleSync="1" SampleDegradationPriority="0"/>
+<BoxInfo Size="1432" Type="trun"/>
+<FullBoxInfo Version="0" Flags="0x305"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213333" Size="284"/>
+<TrackRunEntry Duration="213334" Size="284"/>
+<TrackRunEntry Duration="213333" Size="275"/>
+<TrackRunEntry Duration="213333" Size="289"/>
+<TrackRunEntry Duration="213334" Size="280"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+<TrackRunEntry Duration="213333" Size="277"/>
+<TrackRunEntry Duration="213334" Size="295"/>
+<TrackRunEntry Duration="213333" Size="275"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213334" Size="263"/>
+<TrackRunEntry Duration="213333" Size="303"/>
+<TrackRunEntry Duration="213333" Size="292"/>
+<TrackRunEntry Duration="213334" Size="274"/>
+<TrackRunEntry Duration="213333" Size="268"/>
+<TrackRunEntry Duration="213333" Size="289"/>
+<TrackRunEntry Duration="213334" Size="271"/>
+<TrackRunEntry Duration="213333" Size="284"/>
+<TrackRunEntry Duration="213333" Size="283"/>
+<TrackRunEntry Duration="213334" Size="271"/>
+<TrackRunEntry Duration="213333" Size="293"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="273"/>
+<TrackRunEntry Duration="213333" Size="285"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="267"/>
+<TrackRunEntry Duration="213333" Size="295"/>
+<TrackRunEntry Duration="213334" Size="292"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213333" Size="291"/>
+<TrackRunEntry Duration="213334" Size="292"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213334" Size="289"/>
+<TrackRunEntry Duration="213333" Size="268"/>
+<TrackRunEntry Duration="213333" Size="257"/>
+<TrackRunEntry Duration="213334" Size="286"/>
+<TrackRunEntry Duration="213333" Size="288"/>
+<TrackRunEntry Duration="213333" Size="332"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="263"/>
+<TrackRunEntry Duration="213333" Size="265"/>
+<TrackRunEntry Duration="213334" Size="283"/>
+<TrackRunEntry Duration="213333" Size="256"/>
+<TrackRunEntry Duration="213333" Size="290"/>
+<TrackRunEntry Duration="213334" Size="263"/>
+<TrackRunEntry Duration="213333" Size="277"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213334" Size="294"/>
+<TrackRunEntry Duration="213333" Size="259"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="279"/>
+<TrackRunEntry Duration="213333" Size="278"/>
+<TrackRunEntry Duration="213334" Size="270"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213333" Size="278"/>
+<TrackRunEntry Duration="213334" Size="287"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213334" Size="319"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213333" Size="285"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="255"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213334" Size="266"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="267"/>
+<TrackRunEntry Duration="213334" Size="271"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213334" Size="261"/>
+<TrackRunEntry Duration="213333" Size="290"/>
+<TrackRunEntry Duration="213333" Size="259"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213334" Size="289"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213334" Size="254"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213334" Size="260"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213334" Size="269"/>
+<TrackRunEntry Duration="213333" Size="257"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213334" Size="270"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="246"/>
+<TrackRunEntry Duration="213334" Size="269"/>
+<TrackRunEntry Duration="213333" Size="261"/>
+<TrackRunEntry Duration="213333" Size="263"/>
+<TrackRunEntry Duration="213334" Size="269"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213334" Size="271"/>
+<TrackRunEntry Duration="213333" Size="272"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213334" Size="247"/>
+<TrackRunEntry Duration="213333" Size="285"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213334" Size="266"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213334" Size="249"/>
+<TrackRunEntry Duration="213333" Size="285"/>
+<TrackRunEntry Duration="213333" Size="249"/>
+<TrackRunEntry Duration="213334" Size="261"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="272"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="283"/>
+<TrackRunEntry Duration="213333" Size="266"/>
+<TrackRunEntry Duration="213333" Size="267"/>
+<TrackRunEntry Duration="213334" Size="272"/>
+<TrackRunEntry Duration="213333" Size="256"/>
+<TrackRunEntry Duration="213333" Size="264"/>
+<TrackRunEntry Duration="213334" Size="271"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="256"/>
+<TrackRunEntry Duration="213334" Size="266"/>
+<TrackRunEntry Duration="213333" Size="262"/>
+<TrackRunEntry Duration="213333" Size="254"/>
+<TrackRunEntry Duration="213334" Size="257"/>
+<TrackRunEntry Duration="213333" Size="280"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213334" Size="284"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213334" Size="278"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213333" Size="240"/>
+<TrackRunEntry Duration="213334" Size="273"/>
+<TrackRunEntry Duration="213333" Size="248"/>
+<TrackRunEntry Duration="213333" Size="264"/>
+<TrackRunEntry Duration="213334" Size="267"/>
+<TrackRunEntry Duration="213333" Size="288"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213334" Size="250"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213334" Size="266"/>
+<TrackRunEntry Duration="213333" Size="276"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213334" Size="282"/>
+<TrackRunEntry Duration="213333" Size="274"/>
+<TrackRunEntry Duration="213333" Size="260"/>
+<TrackRunEntry Duration="213334" Size="263"/>
+<TrackRunEntry Duration="213333" Size="288"/>
+<TrackRunEntry Duration="213333" Size="270"/>
+<TrackRunEntry Duration="213334" Size="269"/>
+<TrackRunEntry Duration="213333" Size="271"/>
+<TrackRunEntry Duration="213333" Size="287"/>
+<TrackRunEntry Duration="213334" Size="277"/>
+<TrackRunEntry Duration="213333" Size="272"/>
+<TrackRunEntry Duration="213333" Size="269"/>
+<TrackRunEntry Duration="213334" Size="294"/>
+<TrackRunEntry Duration="213333" Size="259"/>
+<TrackRunEntry Duration="213333" Size="273"/>
+<TrackRunEntry Duration="213334" Size="268"/>
+<TrackRunEntry Duration="213333" Size="258"/>
+<TrackRunEntry Duration="213333" Size="265"/>
+<TrackRunEntry Duration="213334" Size="276"/>
+<TrackRunEntry Duration="213333" Size="281"/>
+<TrackRunEntry Duration="213333" Size="257"/>
+<TrackRunEntry Duration="213334" Size="285"/>
+<TrackRunEntry Duration="213333" Size="263"/>
+<TrackRunEntry Duration="213333" Size="282"/>
+</TrackRunBox>
+</TrackFragmentBox>
+</MovieFragmentBox>
+<MediaDataBox dataSize="47962">
+<BoxInfo Size="47970" Type="mdat"/>
+</MediaDataBox>
+</IsoMediaFile>
