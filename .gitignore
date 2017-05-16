@@ -1,4 +1,6 @@
 *~
-xml2box
-zset2sidx
+/xml2box/xml2box
+/timeline_v2/zset2sidx
+/timeline_v2/schedule
+/timeline_v2/timeline
 /inimedia/test/test-out.mp4
