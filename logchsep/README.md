@@ -26,7 +26,5 @@
 
 ## Example
 
-
     logchsep access.log
-    cat access.log | logchsep
-    grep ' 404 ' access_proxy.log | cut -f 5
+    grep ' 404 ' access_proxy.log | logchsep | cut -f 5
