@@ -240,7 +240,7 @@ int main(int argc, char **argv)
             verbose = 1;
             break;
         default: /* '?' */
-            fprintf(stderr, "Usage: schedule KEY [PORT] [HOSTNAME]\n");
+            display_usage();
             exit(EXIT_FAILURE);
         }
     }
