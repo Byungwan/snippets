@@ -1,6 +1,12 @@
 import argparse
 import fileinput
 import re
+import signal
+import sys
+
+
+def signal_handler(signal, frame):
+    sys.exit(0)
 
 
 def parse_tokens(line):
@@ -41,6 +47,8 @@ def main():
         input = fileinput.input()
     else:
         input = fileinput.input(args.file)
+
+    signal.signal(signal.SIGINT, signal_handler)
 
     for line in input:
         if line != "\n":

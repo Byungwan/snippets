@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from setuptools import setup
+from logchsep import __version__
 
 setup(
     name='logchsep',
-    version='0.0.1',
+    version=__version__,
     url='http://inisoft.co.kr',
     description='log field delimiter',
     author='Jun, Byungwan',
