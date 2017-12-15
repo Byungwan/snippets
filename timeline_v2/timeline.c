@@ -6,11 +6,14 @@
 #include <inttypes.h>           /* PRId64 */
 #include <endian.h>             /* htobe64 */
 #include <limits.h>             /* PATH_MAX */
+#include <time.h>
 #include <errno.h>
 #include <hiredis/hiredis.h>
 
 #define PROTO_INLINE_MAX_SIZE   (1024*64) /* Max size of inline reads */
 #define CR_NL_SIZE              2
+
+#define TIMESCALE               10000000
 
 typedef struct __attribute__((__packed__)) seg_time_s {
     uint64_t start_time;
@@ -26,6 +29,8 @@ typedef struct __attribute__((__packed__)) seg_time_s {
 } seg_time_t;
 
 static char hexconvtab[] = "0123456789abcdef";
+static int human = 0;
+static int utc = 0;
 static int verbose = 0;
 
 
@@ -38,7 +43,12 @@ static void display_usage()
             "  -p <port>          Server port (default: 6379)\n"
             "  -k <key>           Key\n"
             " From FILE\n"
-            "  -f <file>          Input RDB dump file, `-' means STDIN\n\n");
+            "  -f <file>          Input RDB dump file, `-' means STDIN\n"
+            " Generic options\n"
+            "  -H                 human readable format\n"
+            "  -U                 UTC\n"
+            "  -V                 more verbose\n\n"
+        );
 }
 
 
@@ -59,9 +69,25 @@ static void display_timeline(void *data, size_t size)
     st.mdat_offset = be32toh(st.mdat_offset);
     st.size        = be32toh(st.size);
 
-    printf("%"PRId64" %u %"PRId64" %x %"PRId64" %u %u %u ",
-           st.start_time, st.seq, st.duration, st.flags, st.offset,
-           st.ts_size, st.mdat_offset, st.size);
+    if (human) {
+        time_t start_t = st.start_time / TIMESCALE;
+        struct tm start_tm;
+        if (utc)
+            gmtime_r(&start_t, &start_tm);
+        else
+            localtime_r(&start_t, &start_tm);
+
+        printf("%d-%d-%d_%d:%d:%d %u %"PRId64" %x %"PRId64" %u %u %u ",
+               start_tm.tm_year + 1900, start_tm.tm_mon + 1, start_tm.tm_mday,
+               start_tm.tm_hour, start_tm.tm_min, start_tm.tm_sec,
+               st.seq, st.duration, st.flags, st.offset,
+               st.ts_size, st.mdat_offset, st.size);
+    } else {
+        printf("%"PRId64" %u %"PRId64" %x %"PRId64" %u %u %u ",
+               st.start_time, st.seq, st.duration, st.flags, st.offset,
+               st.ts_size, st.mdat_offset, st.size);
+    }
+
     if (verbose) {
         for (i = 0; i < sizeof(st.key_id); i++) {
             putchar(hexconvtab[st.key_id[i] >> 4]);
@@ -238,7 +264,7 @@ int main(int argc, char **argv)
     const char *hostname = "127.0.0.1";
     const char *filename = NULL;
 
-    while ((opt = getopt(argc, argv, "f:k:h:p:V")) != -1) {
+    while ((opt = getopt(argc, argv, "f:k:h:p:HUV")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
@@ -251,6 +277,12 @@ int main(int argc, char **argv)
             break;
         case 'p':
             port = atoi(optarg);
+            break;
+        case 'H':
+            human = 1;
+            break;
+        case 'U':
+            utc = 1;
             break;
         case 'V':
             verbose = 1;

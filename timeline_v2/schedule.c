@@ -6,13 +6,15 @@
 #include <inttypes.h>           /* PRId64 */
 #include <endian.h>             /* htobe64 */
 #include <limits.h>             /* PATH_MAX */
+#include <time.h>
 #include <errno.h>
 #include <hiredis/hiredis.h>
 
 #define PROTO_INLINE_MAX_SIZE   (1024*64) /* Max size of inline reads */
 #define CR_NL_SIZE              2
 
-#define JSON_MAX 10000
+#define JSON_MAX                10000
+#define TIMESCALE               10000000
 
 typedef struct __attribute__((__packed__)) ass_schd_s {
     uint64_t start_time;
@@ -21,6 +23,8 @@ typedef struct __attribute__((__packed__)) ass_schd_s {
     char     json[JSON_MAX+1];
 } ass_schd_t;
 
+static int human = 0;
+static int utc = 0;
 static int verbose = 0;
 
 
@@ -33,7 +37,11 @@ static void display_usage()
             "  -p <port>          Server port (default: 6379)\n"
             "  -k <key>           Key\n"
             " From FILE\n"
-            "  -f <file>          Input RDB dump file, `-' means STDIN\n\n");
+            "  -f <file>          Input RDB dump file, `-' means STDIN\n"
+            " Generic options\n"
+            "  -H                 human readable format\n"
+            "  -U                 UTC\n"
+            "  -V                 more verbose\n\n");
 }
 
 
@@ -48,7 +56,21 @@ static void display_schedule(void *data, size_t size)
     as.duration    = be64toh(as.duration);
     as.flags       = be32toh(as.flags);
 
-    printf("%"PRId64" %"PRId64" %x ", as.start_time, as.duration, as.flags);
+    if (human) {
+        time_t start_t = as.start_time / TIMESCALE;
+        struct tm start_tm;
+        if (utc)
+            gmtime_r(&start_t, &start_tm);
+        else
+            localtime_r(&start_t, &start_tm);
+
+        printf("%d-%d-%d_%d:%d:%d %"PRId64" %x ",
+               start_tm.tm_year + 1900, start_tm.tm_mon + 1, start_tm.tm_mday,
+               start_tm.tm_hour, start_tm.tm_min, start_tm.tm_sec,
+               as.duration, as.flags);
+    } else {
+        printf("%"PRId64" %"PRId64" %x ", as.start_time, as.duration, as.flags);
+    }
     if (verbose) {
         printf(" %s", as.json);
     }
@@ -222,7 +244,7 @@ int main(int argc, char **argv)
     const char *hostname = "127.0.0.1";
     const char *filename = NULL;
 
-    while ((opt = getopt(argc, argv, "f:k:h:p:V")) != -1) {
+    while ((opt = getopt(argc, argv, "f:k:h:p:HUV")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
@@ -235,6 +257,12 @@ int main(int argc, char **argv)
             break;
         case 'p':
             port = atoi(optarg);
+            break;
+        case 'H':
+            human = 1;
+            break;
+        case 'U':
+            utc = 1;
             break;
         case 'V':
             verbose = 1;
