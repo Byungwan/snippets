@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>           /* PRId64 */
-#include <endian.h>             /* htobe64 */
+#include <endian.h>             /* htobe64, be64toh */
 #include <limits.h>             /* PATH_MAX */
 #include <time.h>
 #include <errno.h>
@@ -42,6 +42,8 @@ static void display_usage()
             "  -h <hostname>      Server hostname (default: 127.0.0.1)\n"
             "  -p <port>          Server port (default: 6379)\n"
             "  -k <key>           Key\n"
+            "  -s <time>          start time (inclusive)\n"
+            "  -e <time>          end time (exclusive)\n"
             " From FILE\n"
             "  -f <file>          Input RDB dump file, `-' means STDIN\n"
             " Generic options\n"
@@ -123,7 +125,7 @@ static long str2ll(const char *str)
 
 
 static void display_redis_timeline(const char *hostname, int port,
-                                   const char *key)
+                                   const char *key, long start, long end)
 {
     redisContext *c;
     redisReply *reply;
@@ -141,7 +143,22 @@ static void display_redis_timeline(const char *hostname, int port,
         exit(EXIT_FAILURE);
     }
 
-    reply = redisCommand(c, "ZRANGE %s 0 -1", key);
+    if (start < 0 && end < 0) {
+        reply = redisCommand(c, "ZRANGEBYLEX %s - +", key);
+    } else if (start < 0) {
+        end = be64toh(end);
+        reply = redisCommand(c, "ZRANGEBYLEX %s - (%b", key,
+                             &end, sizeof(end));
+    } else if (end < 0) {
+        start = be64toh(start);
+        reply = redisCommand(c, "ZRANGEBYLEX %s [%b +", key,
+                             &start, sizeof(start));
+    } else {
+        start = be64toh(start);
+        end = be64toh(end);
+        reply = redisCommand(c, "ZRANGEBYLEX %s [%b (%b", key,
+                             &start, sizeof(start), &end, sizeof(end));
+    }
     if (reply->type == REDIS_REPLY_ARRAY) {
         for (i = 0; i < reply->elements; i++) {
             display_timeline(reply->element[i]->str, reply->element[i]->len);
@@ -263,8 +280,10 @@ int main(int argc, char **argv)
     int port = 6379;
     const char *hostname = "127.0.0.1";
     const char *filename = NULL;
+    long start = -1;
+    long end = -1;
 
-    while ((opt = getopt(argc, argv, "f:k:h:p:HUV")) != -1) {
+    while ((opt = getopt(argc, argv, "f:k:h:p:s:e:HUV")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
@@ -277,6 +296,12 @@ int main(int argc, char **argv)
             break;
         case 'p':
             port = atoi(optarg);
+            break;
+        case 's':
+            start = str2ll(optarg);
+            break;
+        case 'e':
+            end = str2ll(optarg);
             break;
         case 'H':
             human = 1;
@@ -299,7 +324,7 @@ int main(int argc, char **argv)
     }
 
     if (key != NULL) {
-        display_redis_timeline(hostname, port, key);
+        display_redis_timeline(hostname, port, key, start, end);
     } else if (filename != NULL) {
         display_file_timeline(filename);
     }
