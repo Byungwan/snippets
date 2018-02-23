@@ -1,6 +1,45 @@
+# common
+*.dump
+build/
+target/
+dist/
 *~
-/xml2box/xml2box
-/timeline_v2/zset2sidx
-/timeline_v2/schedule
-/timeline_v2/timeline
-/inimedia/test/test-out.mp4
+
+# C/C++
+*.o
+*.so
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+sdist/
+*.egg-info/
+
+# java
+*.class
+*.jar
+*.war
+
+# clojure
+.nrepl-port
+
+# scala
+.ensime
+.ensime_cache/
+
+# lisp
+*.asd
+
+# erlang
+*.beam
+
+# gtags
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+# etc
+.cache
