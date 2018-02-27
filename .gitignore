@@ -16,6 +16,9 @@ __pycache__/
 .venv/
 sdist/
 *.egg-info/
+.eggs/
+.tox/
+.pytest_cache/
 
 # java
 *.class
