@@ -19,7 +19,7 @@ def test_mariadb_transaction():
         cur.execute('DROP TABLE IF EXISTS test_timeline')
 
     stmt_create = '''CREATE TABLE test_timeline (
-    media_start BIGINT UNSIGNED PRIMARY KEY NOT NULL,
+    media_timestamp BIGINT UNSIGNED PRIMARY KEY NOT NULL,
     media_duration BIGINT UNSIGNED DEFAULT 0,
     media_sequence INT UNSIGNED DEFAULT 0,
 
@@ -30,16 +30,16 @@ def test_mariadb_transaction():
     key_id BINARY(16))'''
     cur.execute(stmt_create)
 
-    seg_info = (123456789, '/stg/ch001/video_eng_3000000/123.mp4')
-    stmt_insert = '''INSERT INTO test_timeline (media_start, file_path)
+    seg = (123456789, '/stg/ch001/video_eng_3000000/123.mp4')
+    stmt_insert = '''INSERT INTO test_timeline (media_timestamp, file_path)
     VALUES (%s, %s)'''
     try:
-        cur.execute(stmt_insert, seg_info)
+        cur.execute(stmt_insert, seg)
         db.commit()
     except:
         db.rollback()
 
-    stmt_select = 'SELECT media_start, file_path FROM test_timeline'
+    stmt_select = 'SELECT media_timestamp, file_path FROM test_timeline'
     try:
         cur.execute(stmt_select)
         res = cur.fetchall()
@@ -47,6 +47,6 @@ def test_mariadb_transaction():
         pass
 
     assert len(res) == 1
-    assert res[0] == seg_info
+    assert res[0] == seg
 
     db.close()

@@ -7,7 +7,7 @@ CREATE DATABASE mariadb_benchmark;
 USE mariadb_benchmark;
 
 CREATE TABLE segment_timeline (
-    media_start BIGINT UNSIGNED PRIMARY KEY NOT NULL,
+    media_timestamp BIGINT UNSIGNED PRIMARY KEY NOT NULL,
     media_duration BIGINT UNSIGNED DEFAULT 0,
     media_sequence INT UNSIGNED DEFAULT 0,
 
