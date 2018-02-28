@@ -27,6 +27,6 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     zip_safe=False,
-    install_requires=['PyMongo'],
+    install_requires=['PyMongo', 'motor'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'])
