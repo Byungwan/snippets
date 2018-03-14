@@ -11,9 +11,9 @@ Running setup.py install builds and installs all modules in one run::
 
 Usage
 -----
-The logchsep utility parses each line of an access log from each file
+The logchsep utility parses each line of an access log from a given file
 and writes its fields separated by a given delimiter to the standard
-output.  If no file arguments are specified, or a file argument is a
+output.  If no file argument is specified, or a file argument is a
 single dash ('-'), cut reads from the standard input::
     usage: logchsep [-h] [-d, ---delimiter DELIM] [FILE]
 
