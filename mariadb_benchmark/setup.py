@@ -28,5 +28,7 @@ setup(
     ],
     zip_safe=False,
     install_requires=['PyMySQL', 'aiomysql'],
-    setup_requires=['pytest-runner'],
+    # pytest-runner 4.0 has a fatal bug:
+    #   https://github.com/pytest-dev/pytest-runner/issues/39
+    setup_requires=['pytest-runner<4'],
     tests_require=['pytest'])
