@@ -29,10 +29,13 @@ setup(
     ],
     zip_safe=False,
     install_requires=[],
-    setup_requires=['pytest-runner'],
+    # pytest-runner 4.0 has a fatal bug:
+    #   https://github.com/pytest-dev/pytest-runner/issues/39
+    setup_requires=['pytest-runner<4'],
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'logchsep = logchsep:main'
         ]
-    })
+    }
+)
