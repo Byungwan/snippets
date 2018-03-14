@@ -23,8 +23,8 @@ single dash (`-'), cut reads from the standard input.::
       FILE            with no FILE, or when FILE is -, read standard input
 
     optional arguments:
-      \-h, --help     show this help message and exit
-      \-d, ---delimiter DELIM
+      -h, --help     show this help message and exit
+      -d, ---delimiter DELIM
                        use DELIM instead of TAB for field delimiter
 
 Example
