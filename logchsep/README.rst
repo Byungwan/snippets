@@ -35,4 +35,5 @@ Usage
 Example
 -------
 Get 404 client IPs and URLs:
+
     grep ' 404 ' access_proxy.log | logchsep | cut -f 3,6
