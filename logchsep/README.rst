@@ -25,10 +25,10 @@ single dash (`-'), cut reads from the standard input.::
     optional arguments:
       -h, --help     show this help message and exit
       -d, ---delimiter DELIM
-                       use DELIM instead of TAB for field delimiter
+                     use DELIM instead of TAB for field delimiter
 
 Example
 -------
-It is useful with cut command.  
+It is useful with cut command.
 For example, getting 404 client IPs and URLs::
     grep ' 404 ' access_proxy.log | logchsep | cut -f 3,6
