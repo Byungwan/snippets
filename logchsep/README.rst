@@ -8,18 +8,21 @@ separated by a given delimiter.  It is useful with cut command.
 
 Build
 -----
+
 Commands::
     cd logchsep
     python setup.py build
 
 Installation
 ------------
+
 Commands::
     cd logchsep
     sudo python setup.py install
 
 Usage
 -----
+
 How to use::
     usage: logchsep [-h] [-d, ---delimiter DELIM] [FILE]
 
@@ -35,5 +38,6 @@ How to use::
 
 Example
 -------
+
 Get 404 client IPs and URLs::
     grep ' 404 ' access_proxy.log | logchsep | cut -f 3,6
