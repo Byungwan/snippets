@@ -30,6 +30,7 @@ Usage
 
     optional arguments:
       \-h, --help             show this help message and exit
+
       \-d, ---delimiter DELIM use DELIM instead of TAB for field delimiter
 
 Example
