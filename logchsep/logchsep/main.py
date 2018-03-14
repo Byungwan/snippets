@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import fileinput
 import re
@@ -5,31 +6,41 @@ import signal
 import sys
 
 
+class ParsingError(Exception):
+    def __init__(self, pos, str):
+        super(ParsingError, self).__init__(
+            "syntax error {} \"{}\"".format(pos, str))
+        self.pos = pos
+        self.str = str
+
+
 def signal_handler(signal, frame):
     sys.exit(0)
 
 
-def parse_tokens(line):
-    tokens = list()
+def parse_log(line):
+    fields = list()
     index = 0
     while index < len(line):
         letter = line[index]
-        if letter == '\"':
-            pat = r'^("[^"]*")\s'
-        elif letter == '[':
-            pat = r'^(\[[^\]]*\])\s'
-        elif letter == '(':
-            pat = r'^(\([^\)]*\))\s'
-        else:
-            pat = r'^(\S+)\s'
-        m = re.match(pat, line[index:])
-        if m:
-            tokens.append(m.group(1))
-            index = index + m.span()[1]
-        else:
+        if letter == ' ' or letter == '\t':
             index = index + 1
-
-    return tokens
+        else:
+            if letter == '\"':
+                pat = r'^("[^"]*")'
+            elif letter == '[':
+                pat = r'^(\[[^\]]*\])'
+            elif letter == '(':
+                pat = r'^(\([^\)]*\))'
+            else:
+                pat = r'^(\S+)'
+            m = re.match(pat, line[index:])
+            if m:
+                fields.append(m.group(1))
+                index = index + m.span()[1]
+            else:
+                raise ParsingError(index, line)
+    return fields
 
 
 def main():
@@ -52,7 +63,11 @@ def main():
 
     for line in input:
         if line != "\n":
-            print(args.delim.join(parse_tokens(line)))
+            try:
+                print(args.delim.join(parse_log(line)))
+            except ParsingError as exc:
+                print("error: {}".format(exc), file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()

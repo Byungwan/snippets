@@ -1,16 +1,25 @@
-# logchsep
+========
+logchsep
+========
 
-## Build
+logchsep parse each line of an access log and print its fields
+separated by a given delimiter.  It is useful with cut command.
+
+
+Build
+-----
 
     cd logchsep
     python setup.py build
 
-## Install
+Installation
+------------
 
     cd logchsep
     sudo python setup.py install
 
-## Usage
+Usage
+-----
 
     usage: logchsep [-h] [-d, ---delimiter DELIM] [FILE]
 
@@ -24,7 +33,8 @@
       -d, ---delimiter DELIM
                             use DELIM instead of TAB for field delimiter
 
-## Example
+Example
+-------
 
-    logchsep access.log
-    grep ' 404 ' access_proxy.log | logchsep | cut -f 5
+Get 404 client IPs and URLs:
+    grep ' 404 ' access_proxy.log | logchsep | cut -f 3,6

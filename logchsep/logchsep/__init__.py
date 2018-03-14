@@ -1,4 +1,5 @@
-from .main import main
+# -*- coding: utf-8 -*-
+from logchsep.main import main
 
 __all__ = ['main']
-__version__ = '0.0.2'
+__version__ = '0.0.3'
