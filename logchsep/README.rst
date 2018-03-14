@@ -2,12 +2,12 @@
 logchsep
 ========
 
-Build and Installation
+Installation
 ----------------------
 You should run the setup command from the distribution root directory.
 Running setup.py install builds and installs all modules in one run.::
     cd logchsep
-    python setup.py build
+    python setup.py install
 
 Usage
 -----
