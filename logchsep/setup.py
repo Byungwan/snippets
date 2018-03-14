@@ -12,7 +12,7 @@ def long_description():
 setup(
     name='logchsep',
     version=__version__,
-    description='logchsep',
+    description='Change log field delimiter',
     long_description=long_description(),
     url='https://github.com/Byungwan/snippets/logchsep',
     author='Byungwan Jun',
