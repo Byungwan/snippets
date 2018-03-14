@@ -2,40 +2,19 @@
 logchsep
 ========
 
-logchsep parse each line of an access log and print its fields
-separated by a given delimiter.  It is useful with cut command.
-
-Monospaced text is marked with two backquotes "``" instead of asterisks;
-no bold or italic is possible within it (asterisks just represent
-themselves), although in some contexts, code syntax highlighting may be
-applied.  Note that in monospaced text, multiple spaces are *not*
-collapsed, but are preserved; however, flow and wrapping *do* occur, and
-any number of spaces may be replaced by a line break.  Markdown allows
-monospaced text within bold or italic sections, but not vice versa -
-reStructuredText allows neither.  In summary, the common inline markup
-is the following::
-
-    Mark *italic text* with one asterisk, **bold text** with two.
-    For ``monospaced text``, use two "backquotes" instead.
-
-Build
------
-
-Commands::
+Build and Installation
+----------------------
+You should run the setup command from the distribution root directory.
+Running setup.py install builds and installs all modules in one run.::
     cd logchsep
     python setup.py build
 
-Installation
-------------
-
-Commands::
-    cd logchsep
-    sudo python setup.py install
-
 Usage
 -----
-
-How to use::
+The logchsep utility parse each line of an access log from each file
+and writes its fields separated by a given delimiter to the standard
+output.  If no file arguments are specified, or a file argument is a
+single dash (`-'), cut reads from the standard input.::
     usage: logchsep [-h] [-d, ---delimiter DELIM] [FILE]
 
     Change log field delimiter
@@ -50,6 +29,5 @@ How to use::
 
 Example
 -------
-
-Get 404 client IPs and URLs::
+It is useful with cut command. For example, getting 404 client IPs and URLs::
     grep ' 404 ' access_proxy.log | logchsep | cut -f 3,6
