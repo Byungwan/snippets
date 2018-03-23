@@ -66,7 +66,7 @@ static void display_schedule(void *data, size_t size)
         else
             localtime_r(&start_t, &start_tm);
 
-        printf("%d-%d-%d_%d:%d:%d %"PRId64" %x ",
+        printf("%04d-%02d-%02d_%02d:%02d:%02d %"PRId64" %x ",
                start_tm.tm_year + 1900, start_tm.tm_mon + 1, start_tm.tm_mday,
                start_tm.tm_hour, start_tm.tm_min, start_tm.tm_sec,
                as.duration, as.flags);

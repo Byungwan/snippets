@@ -49,8 +49,7 @@ static void display_usage()
             " Generic options\n"
             "  -H                 human readable format\n"
             "  -U                 UTC\n"
-            "  -V                 more verbose\n\n"
-        );
+            "  -V                 more verbose\n\n");
 }
 
 
@@ -79,7 +78,7 @@ static void display_timeline(void *data, size_t size)
         else
             localtime_r(&start_t, &start_tm);
 
-        printf("%d-%d-%d_%d:%d:%d %u %"PRId64" %x %"PRId64" %u %u %u ",
+        printf("%04d-%02d-%02d_%02d:%02d:%02d %u %"PRId64" %x %"PRId64" %u %u %u ",
                start_tm.tm_year + 1900, start_tm.tm_mon + 1, start_tm.tm_mday,
                start_tm.tm_hour, start_tm.tm_min, start_tm.tm_sec,
                st.seq, st.duration, st.flags, st.offset,
