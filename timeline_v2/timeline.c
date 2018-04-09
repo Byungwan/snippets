@@ -42,8 +42,8 @@ static void display_usage()
             "  -h <hostname>      Server hostname (default: 127.0.0.1)\n"
             "  -p <port>          Server port (default: 6379)\n"
             "  -k <key>           Key\n"
-            "  -s <time>          start time (inclusive)\n"
-            "  -e <time>          end time (exclusive)\n"
+            "  -s <time>          start time (inclusive) ex: 2018-04-09_17:33:21\n"
+            "  -e <time>          end time (exclusive) ex: 2018-04-10_08:15:00\n"
             " From FILE\n"
             "  -f <file>          Input RDB dump file, `-' means STDIN\n"
             " Generic options\n"
@@ -120,6 +120,18 @@ static long str2ll(const char *str)
     }
 
     return val;
+}
+
+
+static time_t to_epoch(const char *str)
+{
+    struct tm ti={0};
+    if(sscanf(str, "%d-%d-%d_%d:%d:%d",
+              &ti.tm_year, &ti.tm_mon, &ti.tm_mday,
+              &ti.tm_hour, &ti.tm_min, &ti.tm_sec) != 6)
+        return str2ll(str);
+    ti.tm_year -= 1900;
+    return mktime(&ti);
 }
 
 
@@ -297,10 +309,10 @@ int main(int argc, char **argv)
             port = atoi(optarg);
             break;
         case 's':
-            start = str2ll(optarg);
+            start = to_epoch(optarg);
             break;
         case 'e':
-            end = str2ll(optarg);
+            end = to_epoch(optarg);
             break;
         case 'H':
             human = 1;

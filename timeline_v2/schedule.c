@@ -9,6 +9,9 @@
 #include <time.h>
 #include <errno.h>
 #include <hiredis/hiredis.h>
+#include <jansson.h>
+
+#define MAX_KEY_LEN             1024
 
 #define PROTO_INLINE_MAX_SIZE   (1024*64) /* Max size of inline reads */
 #define CR_NL_SIZE              2
@@ -35,15 +38,41 @@ static void display_usage()
             " From REDIS\n"
             "  -h <hostname>      Server hostname (default: 127.0.0.1)\n"
             "  -p <port>          Server port (default: 6379)\n"
+            "  -c <channel>       the same as `-k <channel>/schedule.zset'\n"
             "  -k <key>           Key\n"
-            "  -s <time>          start time (inclusive)\n"
-            "  -e <time>          end time (exclusive)\n"
+            "  -s <time>          start time (inclusive) ex: 2018-04-09_17:33:21\n"
+            "  -e <time>          end time (exclusive) ex: 2018-04-10_08:15:00\n"
             " From FILE\n"
             "  -f <file>          Input RDB dump file, `-' means STDIN\n"
             " Generic options\n"
             "  -H                 human readable format\n"
-            "  -U                 UTC\n"
-            "  -V                 more verbose\n\n");
+            "  -U                 UTC\n\n");
+}
+
+
+static const char* display_subasset(const char *text)
+{
+    json_t *root;
+    json_error_t error;
+    const char *key;
+    json_t *val;
+
+    root = json_loads(text, 0, &error);
+    if (root == NULL) {
+        fprintf(stderr, "Error: Can't parse subasset\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (json_is_object(root)) {
+        json_object_foreach(root, key, val) {
+            if (strcmp(key, "assetId") == 0) {
+                return json_string_value(val);
+            }
+        }
+    }
+
+    fprintf(stderr, "Error: Can't find assetId\n");
+    exit(EXIT_FAILURE);
 }
 
 
@@ -74,7 +103,7 @@ static void display_schedule(void *data, size_t size)
         printf("%"PRId64" %"PRId64" %x ", as.start_time, as.duration, as.flags);
     }
     if (verbose) {
-        printf(" %s", as.json);
+        printf(" %s", display_subasset(as.json));
     }
     putchar('\n');
 }
@@ -102,6 +131,17 @@ static long str2ll(const char *str)
     return val;
 }
 
+
+static time_t to_epoch(const char *str)
+{
+    struct tm ti={0};
+    if(sscanf(str, "%d-%d-%d_%d:%d:%d",
+              &ti.tm_year, &ti.tm_mon, &ti.tm_mday,
+              &ti.tm_hour, &ti.tm_min, &ti.tm_sec) != 6)
+        return str2ll(str);
+    ti.tm_year -= 1900;
+    return mktime(&ti);
+}
 
 
 static void display_redis_schedule(const char *hostname, int port,
@@ -257,16 +297,22 @@ int main(int argc, char **argv)
 {
     int opt;
     const char *key = NULL;
+    char keybuf[MAX_KEY_LEN];
     int port = 6379;
     const char *hostname = "127.0.0.1";
     const char *filename = NULL;
     long start = -1;
     long end = -1;
 
-    while ((opt = getopt(argc, argv, "f:k:h:p:s:e:HUV")) != -1) {
+    while ((opt = getopt(argc, argv, "c:f:k:h:p:s:e:HUV")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
+            break;
+        case 'c':
+            /* XXX Do not check for exceeding length */
+            snprintf(keybuf, MAX_KEY_LEN, "%s/schedule.zset", optarg);
+            key = keybuf;
             break;
         case 'k':
             key = optarg;
@@ -278,10 +324,10 @@ int main(int argc, char **argv)
             port = atoi(optarg);
             break;
         case 's':
-            start = str2ll(optarg);
+            start = to_epoch(optarg);
             break;
         case 'e':
-            end = str2ll(optarg);
+            end = to_epoch(optarg);
             break;
         case 'H':
             human = 1;
@@ -313,5 +359,5 @@ int main(int argc, char **argv)
 }
 
 /* Local Variables: */
-/* compile-command:"gcc -Wall -g -o schedule schedule.c -lhiredis" */
+/* compile-command:"gcc -Wall -g -o schedule schedule.c -lhiredis -ljansson" */
 /* End: */

@@ -5,6 +5,8 @@
 #include <hiredis/hiredis.h>
 #include <jansson.h>
 
+#define MAX_KEY_LEN         1024
+
 #define MANIFEST_MAX_SIZE   (1024*64) /* Max size of inline reads */
 
 static void display_usage()
@@ -14,6 +16,7 @@ static void display_usage()
             " From REDIS\n"
             "  -h <hostname>      Server hostname (default: 127.0.0.1)\n"
             "  -p <port>          Server port (default: 6379)\n"
+            "  -c <channel>       the same as `-k <channel>/mediainfo.json'\n"
             "  -k <key>           Key\n"
             " From FILE\n"
             "  -f <file>          Input RDB dump file, `-' means STDIN\n\n");
@@ -139,14 +142,20 @@ main(int argc, char **argv)
 {
     int opt;
     const char *key = NULL;
+    char keybuf[MAX_KEY_LEN];
     int port = 6379;
     const char *hostname = "127.0.0.1";
     const char *filename = NULL;
 
-    while ((opt = getopt(argc, argv, "f:k:h:p:")) != -1) {
+    while ((opt = getopt(argc, argv, "c:f:k:h:p:")) != -1) {
         switch (opt) {
         case 'f':
             filename = optarg;
+            break;
+        case 'c':
+            /* XXX Do not check for exceeding length */
+            snprintf(keybuf, MAX_KEY_LEN, "%s/mediainfo.json", optarg);
+            key = keybuf;
             break;
         case 'k':
             key = optarg;
