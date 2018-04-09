@@ -123,15 +123,20 @@ static long str2ll(const char *str)
 }
 
 
-static time_t to_epoch(const char *str)
+static long to_epoch(const char *str)
 {
     struct tm ti={0};
+    time_t t;
     if(sscanf(str, "%d-%d-%d_%d:%d:%d",
               &ti.tm_year, &ti.tm_mon, &ti.tm_mday,
               &ti.tm_hour, &ti.tm_min, &ti.tm_sec) != 6)
         return str2ll(str);
     ti.tm_year -= 1900;
-    return mktime(&ti);
+    ti.tm_mon--;
+    t = mktime(&ti);
+    if (t < 0)
+        return -1;
+    return (long)t * TIMESCALE;
 }
 
 
