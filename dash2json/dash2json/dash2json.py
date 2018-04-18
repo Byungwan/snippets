@@ -23,7 +23,7 @@ def strip_ns(name):
     return name
 
 
-def parse_dash(elem):
+def conv_manifest_py(elem):
     d = OrderedDict()
     elem_tag = strip_ns(elem.tag)
 
@@ -39,7 +39,7 @@ def parse_dash(elem):
         d['@'] = attrib
 
     for subelem in elem:
-        v = parse_dash(subelem)
+        v = conv_manifest_py(subelem)
         tag = strip_ns(subelem.tag)
         value = v[tag]
 
@@ -64,5 +64,5 @@ def parse_dash(elem):
 
 
 def dash2json(xmlstring):
-    mpd = parse_dash(ET.fromstring(xmlstring))
+    mpd = conv_manifest_py(ET.fromstring(xmlstring))
     return json.dumps(mpd['MPD'], separators=(',', ':'))
