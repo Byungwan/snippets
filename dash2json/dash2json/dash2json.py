@@ -9,6 +9,9 @@ ARRAY_ELEMS = ('Period', 'AdaptationSet', 'Representation',
                'ContentProtection', 'S')
 TEXT_ELEMS = ('pro', 'pssh')
 
+NUM_TYPE = ('t', 'd', 'width', 'height', 'bandwidth', 'startWithSAP')
+BOOL_TYPE = ('segmentAlignment')
+
 
 def strip_ns(name):
     if '}' in name:
@@ -26,7 +29,14 @@ def parse_dash(elem):
     if elem.attrib:
         attrib = OrderedDict()
         for key, value in list(elem.attrib.items()):
-            attrib[strip_ns(key)] = value
+            key = strip_ns(key)
+            if key in NUM_TYPE:
+                value = int(value)
+            elif key in BOOL_TYPE:
+                value = value in ['true', 'True', 'TRUE', 't', 'T',
+                                  'yes', 'Yes', 'YES', 'y', 'Y'
+                                  '1']
+            attrib[key] = value
         d['@'] = attrib
 
     for subelem in elem:
@@ -49,7 +59,7 @@ def parse_dash(elem):
         text = elem.text.strip()
         if text:
             if elem_tag not in TEXT_ELEMS or elem.attrib:
-                d["#text"] = text
+                d["#"] = text
             else:
                 d = text
 
@@ -58,4 +68,4 @@ def parse_dash(elem):
 
 def dash2json(xmlstring):
     mpd = parse_dash(ET.fromstring(xmlstring))
-    return json.dumps(mpd['MPD'])
+    return json.dumps(mpd['MPD'], separators=(',', ':'))
