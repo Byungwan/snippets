@@ -5,8 +5,7 @@ import json
 
 
 def test_master():
-    m3u8string = '''
-#EXTM3U
+    m3u8string = '''#EXTM3U
 #EXT-X-VERSION:5
 #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="audio_eng",DEFAULT=YES,AUTOSELECT=YES,LANGUAGE="eng",URI="audio_eng_128000.hls/playlist.m3u8"
 #EXT-X-STREAM-INF:BANDWIDTH=2000000,AUDIO="audio"
@@ -43,10 +42,8 @@ video_eng_2000000.hls/playlist.m3u8
     assert json.loads(expected) == json.loads(hls2json(m3u8string))
 
 
-
 def test_stream():
-    m3u8string = '''
-#EXTM3U
+    m3u8string = '''#EXTM3U
 #EXT-X-VERSION:5
 #EXT-X-TARGETDURATION:4
 #EXT-X-MEDIA-SEQUENCE:615
@@ -96,5 +93,6 @@ def test_stream():
       {"@hls":{"DURATION":3.76163,"TITLE":"title"},"@":{"media":"15235243339835666.hls"}},
       {"@hls":{"DURATION":3.73836,"TITLE":"title"},"@":{"media":"15235243377452000.hls"}},
       {"@hls":{"DURATION":3.76163,"TITLE":"title"},"@":{"media":"15235243414835554.hls"}},
-      {"@hls":{"DURATION":3.73844,"TITLE":"title"},"@":{"media":"15235243452451888.hls"}}]}}'''
+      {"@hls":{"DURATION":3.73844,"TITLE":"title"},"@":{"media":"15235243452451888.hls"}}
+    ]}}'''
     assert json.loads(expected) == json.loads(hls2json(m3u8string))
