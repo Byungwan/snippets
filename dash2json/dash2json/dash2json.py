@@ -23,7 +23,7 @@ def strip_ns(name):
     return name
 
 
-def conv_manifest_py(elem):
+def read_dash_xml(elem):
     d = OrderedDict()
     elem_tag = strip_ns(elem.tag)
 
@@ -39,7 +39,7 @@ def conv_manifest_py(elem):
         d['@'] = attrib
 
     for subelem in elem:
-        v = conv_manifest_py(subelem)
+        v = read_dash_xml(subelem)
         tag = strip_ns(subelem.tag)
         value = v[tag]
 
@@ -64,5 +64,5 @@ def conv_manifest_py(elem):
 
 
 def dash2json(xmlstring):
-    mpd = conv_manifest_py(ET.fromstring(xmlstring))
+    mpd = read_dash_xml(ET.fromstring(xmlstring))
     return json.dumps(mpd['MPD'], separators=(',', ':'))
