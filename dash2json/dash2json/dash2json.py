@@ -20,9 +20,6 @@ def strip_ns(name):
 
 
 def parse_dash(elem):
-    global ARRAY_ELEMS
-    global TEXT_ELEMS
-
     d = OrderedDict()
     elem_tag = strip_ns(elem.tag)
 
