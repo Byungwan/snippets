@@ -12,6 +12,10 @@ TEXT_ELEMS = ('pro', 'pssh')
 NUM_TYPE = ('t', 'd', 'width', 'height', 'bandwidth', 'startWithSAP')
 BOOL_TYPE = ('segmentAlignment')
 
+TRUE_VALUES = ('true', 'True', 'TRUE', 't', 'T',
+               'yes', 'Yes', 'YES', 'y', 'Y'
+               '1')
+
 
 def strip_ns(name):
     if '}' in name:
@@ -30,17 +34,13 @@ def parse_dash(elem):
             if key in NUM_TYPE:
                 value = int(value)
             elif key in BOOL_TYPE:
-                value = value in ['true', 'True', 'TRUE', 't', 'T',
-                                  'yes', 'Yes', 'YES', 'y', 'Y'
-                                  '1']
+                value = value in TRUE_VALUES
             attrib[key] = value
         d['@'] = attrib
 
     for subelem in elem:
         v = parse_dash(subelem)
-
         tag = strip_ns(subelem.tag)
-
         value = v[tag]
 
         try:
