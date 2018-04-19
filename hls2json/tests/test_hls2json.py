@@ -75,8 +75,7 @@ def test_stream():
   "@":{"startNumber":615,"duration":4},
   "SegmentList":{
     "SegmentURL":[
-      {
-        "@hls":{
+      {"@hls":{
           "EXT-X-KEY":{
             "METHOD":"SAMPLE-AES",
             "URI":"skd://5B26CD83395D4C80EEC85EFBB38B41DB",
@@ -84,15 +83,23 @@ def test_stream():
             "KEYFORMATVERSIONS":"1"
            },
            "DURATION":3.76164,"TITLE":"title"},
-        "@":{"media":"15235243115298222.ts"}},
-      {"@hls":{"DURATION":3.69199,"TITLE":"title"},"@":{"media":"15235243152914666.ts"}},
-      {"@hls":{"DURATION":3.76164,"TITLE":"title"},"@":{"media":"15235243189834554.ts"}},
-      {"@hls":{"DURATION":3.73841,"TITLE":"title"},"@":{"media":"15235243227451000.ts"}},
-      {"@hls":{"DURATION":3.76163,"TITLE":"title"},"@":{"media":"15235243264835112.ts"}},
-      {"@hls":{"DURATION":3.73842,"TITLE":"title"},"@":{"media":"15235243302451446.ts"}},
-      {"@hls":{"DURATION":3.76163,"TITLE":"title"},"@":{"media":"15235243339835666.ts"}},
-      {"@hls":{"DURATION":3.73836,"TITLE":"title"},"@":{"media":"15235243377452000.ts"}},
-      {"@hls":{"DURATION":3.76163,"TITLE":"title"},"@":{"media":"15235243414835554.ts"}},
-      {"@hls":{"DURATION":3.73844,"TITLE":"title"},"@":{"media":"15235243452451888.ts"}}
-    ]}}'''
+       "@":{"media":"15235243115298222.ts"}},
+      {"@hls":{"DURATION":3.69199,"TITLE":"title"},
+       "@":{"media":"15235243152914666.ts"}},
+      {"@hls":{"DURATION":3.76164,"TITLE":"title"},
+       "@":{"media":"15235243189834554.ts"}},
+      {"@hls":{"DURATION":3.73841,"TITLE":"title"},
+       "@":{"media":"15235243227451000.ts"}},
+      {"@hls":{"DURATION":3.76163,"TITLE":"title"},
+       "@":{"media":"15235243264835112.ts"}},
+      {"@hls":{"DURATION":3.73842,"TITLE":"title"},
+       "@":{"media":"15235243302451446.ts"}},
+      {"@hls":{"DURATION":3.76163,"TITLE":"title"},
+       "@":{"media":"15235243339835666.ts"}},
+      {"@hls":{"DURATION":3.73836,"TITLE":"title"},
+       "@":{"media":"15235243377452000.ts"}},
+      {"@hls":{"DURATION":3.76163,"TITLE":"title"},
+       "@":{"media":"15235243414835554.ts"}},
+      {"@hls":{"DURATION":3.73844,"TITLE":"title"},
+       "@":{"media":"15235243452451888.ts"}}]}}'''
     assert json.loads(expected) == json.loads(hls2json(m3u8string))

@@ -4,10 +4,6 @@ import re
 import json
 from collections import OrderedDict
 
-TRUE_VALUES = ('true', 'True', 'TRUE', 't', 'T',
-               'yes', 'Yes', 'YES', 'y', 'Y'
-               '1')
-
 
 class M3u8ParseError(Exception):
     def __init__(self, line, msg='error'):
@@ -81,8 +77,7 @@ TAG_RULES = {
     },
     'EXT-X-KEY': {
         'fn': read_x_pairs,
-        'following-tag': 'EXTINF',
-        'many': True
+        'following-tag': 'EXTINF'
     },
     'EXT-X-STREAM-INF': {
         'fn': read_x_pairs,
@@ -105,19 +100,16 @@ TAG_RULES = {
         'many': True
     },
     'EXT-X-ENDLIST': {
-        'fn': read_nothing,
-        'many': True
+        'fn': read_nothing
     },
     'EXT-X-DISCONTINUITY': {
         'fn': read_nothing,
-        'following-tag': ('EXTINF'),
-        'many': True
+        'following-tag': ('EXTINF')
     },
     'EXT-X-VERSION': {
         'fn': read_x_value,
         'type': 'int',
-        'defval': 3,
-        'many': False
+        'defval': 3
     },
     'EXT-X-PLAYREADYHEADER': {
         'fn': read_x_value,
