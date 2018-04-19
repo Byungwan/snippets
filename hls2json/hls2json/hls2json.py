@@ -3,13 +3,6 @@
 import re
 import json
 from collections import OrderedDict
-# import xml.etree.cElementTree as ET
-
-
-TEXT_ELEMS = ('pro', 'pssh')
-
-NUM_TYPE = ('t', 'd', 'width', 'height', 'bandwidth', 'startWithSAP')
-BOOL_TYPE = ('segmentAlignment')
 
 TRUE_VALUES = ('true', 'True', 'TRUE', 't', 'T',
                'yes', 'Yes', 'YES', 'y', 'Y'
@@ -305,14 +298,10 @@ def m3u8_to_stream(m3u8):
         hls['@']['startNumber'] = m3u8['EXT-X-MEDIA-SEQUENCE']
 
     hls['SegmentList'] = {'SegmentURL': []}
-    for xxx in m3u8['EXTINF']:
-        seg = {'@': {'media': xxx['URL']}}
-        seg['@hls'] = {'DURATION': xxx['DURATION']}
-        if 'TITLE' in xxx:
-            seg['@hls']['TITLE'] = xxx['TITLE']
-        if 'EXT-X-KEY' in xxx:
-            seg['@hls']['KEY'] = xxx['EXT-X-KEY']
-        # XXX EXT-X-BYTERANGE
+    for extinf in m3u8['EXTINF']:
+        seg = {'@': {'media': extinf['URL']}}
+        del extinf['URL']
+        seg['@hls'] = extinf
 
         hls['SegmentList']['SegmentURL'].append(seg)
 
